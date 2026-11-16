@@ -2884,7 +2884,7 @@
 </script>
 <script>
   // ดึงข้อมูลเป็นชิ้นเล็ก ๆ พร้อมกันหลายชิ้น ชิ้นไหนสะดุดจะลองใหม่เฉพาะชิ้นนั้น
-  window.BH_VERSION = 'แอป 2026-11-17.4';
+  window.BH_VERSION = 'แอป 2026-11-17.5';
   function bhCall(fn, args, cb, fail, tries) {
     tries = tries || 1;
     var r = google.script.run.withSuccessHandler(cb).withFailureHandler(function (err) {
@@ -2900,12 +2900,13 @@
       onOk(JSON.parse(json), json);
       var t2 = Date.now();
       var st = document.getElementById('bh-status');
-      if (st) st.textContent = 'เวอร์ชัน ' + window.BH_VERSION + ' · โหลด ' + ((t2 - t0) / 1000).toFixed(1) + ' วิ (รอ Google ' + ((t1 - t0) / 1000).toFixed(1) + ' · มือถือคำนวณ ' + ((t2 - t1) / 1000).toFixed(1) + ')' + (info && info.cached ? ' · แคช' : '') + (window.BH_USER ? ' · ผู้ใช้: ' + window.BH_USER : '');
+      if (st) st.textContent = window.BH_USER ? 'ผู้ใช้: ' + window.BH_USER : '';
+      if (st) st.title = 'เวอร์ชัน ' + window.BH_VERSION + ' · โหลด ' + ((t2 - t0) / 1000).toFixed(1) + ' วิ (รอ Google ' + ((t1 - t0) / 1000).toFixed(1) + ' · คำนวณ ' + ((t2 - t1) / 1000).toFixed(1) + ')' + (info && info.cached ? ' · แคช' : '');
     }
     if (onProgress) onProgress('กำลังเตรียมข้อมูล…');
     bhCall('getInfo', [!!force, window.bhPin(), window.bhDevice()], function (info) {
       if (info.auth) { var e = new Error(info.auth === 'locked' ? 'ระบบปิดชั่วคราว' : 'PIN ไม่ถูกต้อง'); e.auth = info.auth; return fail(e); }
-      window.BH_USER = info.user || '';
+      window.BH_USER = info.user || ''; window.bhStore('bh_user', window.BH_USER);
       if (info.json) return finish(info.json, info);
       var n = info.parts, got = new Array(n), done = 0, stale = false;
       if (onProgress) onProgress('กำลังโหลดข้อมูล… 0/' + n);
@@ -2982,14 +2983,14 @@
     window.bhCacheGet().then(function (c) {
       var shown = false;
       if (c && c.json) {
-        try { if (l) l.remove(); dash._load(JSON.parse(c.json)); shown = true; bhSetStatus('ข้อมูลเมื่อ ' + bhStamp(c.at) + ' · กำลังอัปเดต…'); } catch (e) { shown = false; }
+        try { if (l) l.remove(); dash._load(JSON.parse(c.json)); shown = true; bhSetStatus((window.bhStore('bh_user') ? 'ผู้ใช้: ' + window.bhStore('bh_user') : '')); } catch (e) { shown = false; }
       }
       window.bhFetch(
         function (p, json) { var ll = document.getElementById('bh-loading'); if (ll) ll.remove(); dash._load(p); window.bhCacheSet({ json: json, at: Date.now() }); },
         function (err) {
           if (err && err.auth) return window.bhAuthFailed(err, shown);
           var why = err && err.message ? err.message : err;
-          if (shown) { bhSetStatus('ไม่มีเน็ต · แสดงข้อมูลเมื่อ ' + bhStamp(c.at)); return; }
+          if (shown) { bhSetStatus((window.bhStore('bh_user') ? 'ผู้ใช้: ' + window.bhStore('bh_user') + ' · ' : '') + 'ไม่มีเน็ต (ข้อมูลเมื่อ ' + bhStamp(c.at) + ')'); return; }
           var ll = document.getElementById('bh-loading'); if (!ll) return;
           ll.textContent = 'โหลดข้อมูลไม่สำเร็จ (' + why + ') ตรวจสัญญาณเน็ต แล้วกดลองใหม่ ';
           var b = document.createElement('button'); b.type = 'button'; b.className = 'bh-refresh'; b.textContent = 'ลองใหม่';
