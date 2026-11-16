@@ -41,7 +41,7 @@
 <script>
 // แอปมือถือ: ขอข้อมูลจากเว็บแอป Apps Script ผ่านอินเทอร์เน็ตแทน google.script.run
 (function () {
-  var BUILT_IN_API = "";
+  var BUILT_IN_API = "https://script.google.com/macros/s/AKfycbxDjAYdsEzEQzO53Y7OgBzXyytojRHv_Au9cqddQYtzAz1qkKkV-yzOYHfobXwU6CO1pg/exec";
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
   var q = (location.search.match(/[?&]api=([^&]+)/) || [])[1];
   if (q) store('bh_api', decodeURIComponent(q));
@@ -2884,7 +2884,7 @@
 </script>
 <script>
   // ดึงข้อมูลเป็นชิ้นเล็ก ๆ พร้อมกันหลายชิ้น ชิ้นไหนสะดุดจะลองใหม่เฉพาะชิ้นนั้น
-  window.BH_VERSION = 'แอป 2026-11-17.3';
+  window.BH_VERSION = 'แอป 2026-11-17.4';
   function bhCall(fn, args, cb, fail, tries) {
     tries = tries || 1;
     var r = google.script.run.withSuccessHandler(cb).withFailureHandler(function (err) {
