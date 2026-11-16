@@ -28,11 +28,13 @@
   #dash-root { max-width: 1400px; margin: 0 auto; }
   .dash-select { appearance: none; -webkit-appearance: none; padding: 7px 34px 7px 14px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%239a9890' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; cursor: pointer; }
   .dash-skeleton { display: inline-block; min-width: 4em; min-height: 1em; border-radius: 6px; background: #ffffff14; }
-  #bh-setup { max-width: 460px; margin: 60px auto; padding: 24px; border-radius: 22px; background: #1a1a18; color: #eee; font: 15px/1.6 var(--font-anthropic-sans); }
+  #bh-setup { max-width: 460px; margin: 60px auto; padding: 24px; border-radius: 22px; background: #1a1a18; color: #eee; font: 15px/1.6 var(--font-anthropic-sans); text-align: left; }
   #bh-setup h2 { margin: 0 0 8px; font-size: 20px; color: #efe2a2; }
-  #bh-setup input { width: 100%; box-sizing: border-box; margin: 12px 0; padding: 12px 14px; border-radius: 12px; border: 1px solid #444; background: #000; color: #fff; font: 14px var(--font-anthropic-sans); }
-  #bh-setup button { padding: 10px 22px; border-radius: 999px; border: 0; background: #efe2a2; color: #111; font: 600 15px var(--font-anthropic-sans); }
-  #bh-setup .err { color: #ff8a80; font-size: 13px; }
+  #bh-setup label { display: block; margin-top: 12px; font-size: 13px; color: #aaa; }
+  #bh-setup input { width: 100%; box-sizing: border-box; margin: 6px 0 4px; padding: 12px 14px; border-radius: 12px; border: 1px solid #444; background: #000; color: #fff; font: 16px var(--font-anthropic-sans); }
+  #bh-setup #bh-pin-in { letter-spacing: 6px; font-size: 22px; text-align: center; }
+  #bh-setup button { margin-top: 12px; padding: 10px 22px; border-radius: 999px; border: 0; background: #efe2a2; color: #111; font: 600 15px var(--font-anthropic-sans); }
+  #bh-setup .err { color: #ff8a80; font-size: 13px; min-height: 1em; }
   #bh-loading { color: #9a9890; font: 14px var(--font-anthropic-sans); text-align: center; padding: 40px 0; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
@@ -45,6 +47,7 @@
   if (q) store('bh_api', decodeURIComponent(q));
   window.BH_API = function () { return BUILT_IN_API || store('bh_api') || ''; };
   window.BH_SET_API = function (u) { store('bh_api', u); };
+  window.bhCacheSet = window.bhCacheSet;
   function call(fn, args, ok, fail) {
     var ctl = window.AbortController ? new AbortController() : null;
     var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 45000);
@@ -2881,7 +2884,7 @@
 </script>
 <script>
   // ดึงข้อมูลเป็นชิ้นเล็ก ๆ พร้อมกันหลายชิ้น ชิ้นไหนสะดุดจะลองใหม่เฉพาะชิ้นนั้น
-  window.BH_VERSION = 'แอป 2026-11-17.2';
+  window.BH_VERSION = 'แอป 2026-11-17.3';
   function bhCall(fn, args, cb, fail, tries) {
     tries = tries || 1;
     var r = google.script.run.withSuccessHandler(cb).withFailureHandler(function (err) {
@@ -2897,17 +2900,19 @@
       onOk(JSON.parse(json), json);
       var t2 = Date.now();
       var st = document.getElementById('bh-status');
-      if (st) st.textContent = 'เวอร์ชัน ' + window.BH_VERSION + ' · โหลด ' + ((t2 - t0) / 1000).toFixed(1) + ' วิ (รอ Google ' + ((t1 - t0) / 1000).toFixed(1) + ' · มือถือคำนวณ ' + ((t2 - t1) / 1000).toFixed(1) + ')' + (info && info.cached ? ' · แคช' : '');
+      if (st) st.textContent = 'เวอร์ชัน ' + window.BH_VERSION + ' · โหลด ' + ((t2 - t0) / 1000).toFixed(1) + ' วิ (รอ Google ' + ((t1 - t0) / 1000).toFixed(1) + ' · มือถือคำนวณ ' + ((t2 - t1) / 1000).toFixed(1) + ')' + (info && info.cached ? ' · แคช' : '') + (window.BH_USER ? ' · ผู้ใช้: ' + window.BH_USER : '');
     }
     if (onProgress) onProgress('กำลังเตรียมข้อมูล…');
-    bhCall('getInfo', [!!force], function (info) {
+    bhCall('getInfo', [!!force, window.bhPin(), window.bhDevice()], function (info) {
+      if (info.auth) { var e = new Error(info.auth === 'locked' ? 'ระบบปิดชั่วคราว' : 'PIN ไม่ถูกต้อง'); e.auth = info.auth; return fail(e); }
+      window.BH_USER = info.user || '';
       if (info.json) return finish(info.json, info);
       var n = info.parts, got = new Array(n), done = 0, stale = false;
       if (onProgress) onProgress('กำลังโหลดข้อมูล… 0/' + n);
       for (var i = 0; i < n; i++) (function (i) {
-        bhCall('getPart', [i, info.ver], function (p) {
+        bhCall('getPart', [i, info.ver, info.token], function (p) {
           if (failed || stale) return;
-          if (p.stale) {
+          if (p.stale || p.auth) {
             stale = true;
             if ((restarts || 0) < 2) return window.bhFetch(onOk, onFail, onProgress, false, (restarts || 0) + 1);
             return fail(new Error('ข้อมูลเปลี่ยนระหว่างโหลด'));
@@ -2919,25 +2924,61 @@
       })(i);
     }, fail);
   };
-  function bhStamp(t) { var d = new Date(t); return d.getDate() + '/' + (d.getMonth() + 1) + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
-  function bhSetStatus(t) { var st = document.getElementById('bh-status'); if (st) st.textContent = t; }
-  function bhSetup(msg) {
-    var l = document.getElementById('bh-loading'); if (!l) return;
+  // ---------- PIN ----------
+  window.bhStore = function (k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } };
+  window.bhPin = function () { return window.bhStore('bh_pin') || ''; };
+  window.bhDevice = function () {
+    var u = navigator.userAgent || '', d = /iPhone/.test(u) ? 'iPhone' : /iPad/.test(u) ? 'iPad' : /Android/.test(u) ? 'Android' : /Mac/.test(u) ? 'Mac' : /Windows/.test(u) ? 'Windows' : 'อื่น ๆ';
+    var app = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
+    return d + (app ? ' · แอป' : ' · เว็บ');
+  };
+  window.bhAuthMsg = function (err) {
+    return err && err.auth === 'locked' ? 'มีการใส่ PIN ผิดหลายครั้ง ระบบปิดการเข้าใช้ชั่วคราว 15 นาที ลองใหม่ภายหลัง'
+      : 'PIN ไม่ถูกต้อง หรือถูกยกเลิกสิทธิ์แล้ว ติดต่อเจ้าของร้าน';
+  };
+  // หน้าใส่ PIN (แอปบนมือถือที่ยังไม่มีลิงก์ จะถามลิงก์ /exec ด้วย)
+  window.bhAskPin = function (msg) {
+    var l = document.getElementById('bh-loading');
+    if (!l) { l = document.createElement('div'); l.id = 'bh-loading'; var root = document.getElementById('bh-scroller') || document.body; root.insertBefore(l, root.firstChild); }
+    var needApi = window.BH_API && !window.BH_API();
     l.innerHTML = '';
     var box = document.createElement('div'); box.id = 'bh-setup';
-    box.innerHTML = '<h2>ตั้งค่าแอป Ba hao</h2><div>วางลิงก์เว็บแอป Apps Script (ลิงก์ที่ลงท้ายด้วย <b>/exec</b>) ทำครั้งเดียวต่อเครื่อง</div>' +
-      '<input id="bh-api-in" type="url" inputmode="url" autocomplete="off" placeholder="https://script.google.com/macros/s/…/exec">' +
-      '<div class="err">' + (msg || '') + '</div><button type="button" id="bh-api-ok">เริ่มใช้งาน</button>';
+    box.innerHTML = '<h2>Ba hao ยอดขาย</h2><div>ใส่ PIN ของคุณเพื่อดูข้อมูล (ใส่ครั้งเดียว เครื่องจะจำไว้)</div>' +
+      (needApi ? '<label>ลิงก์เว็บแอป (ลงท้ายด้วย /exec)</label><input id="bh-api-in" type="url" inputmode="url" autocomplete="off" placeholder="https://script.google.com/macros/s/…/exec">' : '') +
+      '<label>PIN</label><input id="bh-pin-in" type="password" inputmode="numeric" autocomplete="off" maxlength="12">' +
+      '<div class="err"></div><button type="button" id="bh-pin-ok">เข้าใช้งาน</button>';
     l.appendChild(box);
-    document.getElementById('bh-api-ok').onclick = function () {
-      var u = document.getElementById('bh-api-in').value.trim();
-      if (!/^https:\/\/script\.google(usercontent)?\.com\/.+\/exec$/.test(u)) { box.querySelector('.err').textContent = 'ลิงก์ต้องขึ้นต้นด้วย https://script.google.com และลงท้ายด้วย /exec'; return; }
-      window.BH_SET_API(u); l.textContent = 'กำลังโหลดข้อมูล…'; bhFirstLoad();
-    };
-  }
+    box.querySelector('.err').textContent = msg || '';
+    var pinIn = document.getElementById('bh-pin-in');
+    function go() {
+      var err = box.querySelector('.err');
+      if (needApi) {
+        var u = document.getElementById('bh-api-in').value.trim();
+        if (!/^https:\/\/script\.google(usercontent)?\.com\/.+\/exec$/.test(u)) { err.textContent = 'ลิงก์ต้องขึ้นต้นด้วย https://script.google.com และลงท้ายด้วย /exec'; return; }
+        window.BH_SET_API(u);
+      }
+      var p = pinIn.value.trim();
+      if (!p) { err.textContent = 'ใส่ PIN ก่อน'; return; }
+      window.bhStore('bh_pin', p);
+      l.textContent = 'กำลังตรวจ PIN…';
+      bhFirstLoad();
+    }
+    document.getElementById('bh-pin-ok').onclick = go;
+    pinIn.onkeydown = function (e) { if (e.key === 'Enter') go(); };
+    setTimeout(function () { try { (needApi ? document.getElementById('bh-api-in') : pinIn).focus(); } catch (e) {} }, 50);
+  };
+  // PIN ใช้ไม่ได้แล้ว: ลืม PIN + ลบข้อมูลในเครื่อง แล้วกลับไปหน้าใส่ PIN
+  window.bhAuthFailed = function (err, dataShown) {
+    if (err && err.auth !== 'locked') window.bhStore('bh_pin', null);
+    var done = function () { if (dataShown) { try { sessionStorage.setItem('bh_msg', window.bhAuthMsg(err)); } catch (e) {} location.reload(); } else window.bhAskPin(window.bhAuthMsg(err)); };
+    if (window.bhCacheSet) window.bhCacheSet(null).then(done, done); else done();
+  };
+  function bhStamp(t) { var d = new Date(t); return d.getDate() + '/' + (d.getMonth() + 1) + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+  function bhSetStatus(t) { var st = document.getElementById('bh-status'); if (st) st.textContent = t; }
   function bhFirstLoad() {
     var l = document.getElementById('bh-loading');
-    if (!window.BH_API()) return bhSetup();
+    var m = null; try { m = sessionStorage.getItem('bh_msg'); sessionStorage.removeItem('bh_msg'); } catch (e) {}
+    if (!window.BH_API() || !window.bhPin()) return window.bhAskPin(m);
     window.bhCacheGet().then(function (c) {
       var shown = false;
       if (c && c.json) {
@@ -2946,6 +2987,7 @@
       window.bhFetch(
         function (p, json) { var ll = document.getElementById('bh-loading'); if (ll) ll.remove(); dash._load(p); window.bhCacheSet({ json: json, at: Date.now() }); },
         function (err) {
+          if (err && err.auth) return window.bhAuthFailed(err, shown);
           var why = err && err.message ? err.message : err;
           if (shown) { bhSetStatus('ไม่มีเน็ต · แสดงข้อมูลเมื่อ ' + bhStamp(c.at)); return; }
           var ll = document.getElementById('bh-loading'); if (!ll) return;
@@ -2953,7 +2995,7 @@
           var b = document.createElement('button'); b.type = 'button'; b.className = 'bh-refresh'; b.textContent = 'ลองใหม่';
           b.onclick = function () { ll.textContent = 'กำลังโหลดข้อมูล…'; bhFirstLoad(); };
           var s2 = document.createElement('button'); s2.type = 'button'; s2.className = 'bh-refresh'; s2.textContent = 'เปลี่ยนลิงก์'; s2.style.marginLeft = '8px';
-          s2.onclick = function () { bhSetup(); };
+          s2.onclick = function () { window.BH_SET_API(''); window.bhAskPin(); };
           ll.appendChild(b); ll.appendChild(s2);
         },
         function (msg) { if (!shown && l) l.textContent = msg; }
@@ -2972,7 +3014,7 @@
       btn.classList.add('is-busy'); label.textContent = 'กำลังโหลด…';
       const done = (ok) => { btn.classList.remove('is-busy'); const t = new Date(); label.textContent = ok ? `อัปเดต ${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}` : 'โหลดไม่สำเร็จ ลองใหม่'; };
       if (window.bhFetch && window.dash && dash._load) {
-        window.bhFetch((p, json) => { dash._load(p); window.bhCacheSet && window.bhCacheSet({ json: json, at: Date.now() }); done(true); }, () => done(false), null, true);
+        window.bhFetch((p, json) => { dash._load(p); window.bhCacheSet && window.bhCacheSet({ json: json, at: Date.now() }); done(true); }, (err) => { if (err && err.auth) return window.bhAuthFailed(err, true); done(false); }, null, true);
       } else {
         try { location.reload(); } catch (e) { done(false); }
       }
