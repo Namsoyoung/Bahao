@@ -15,6 +15,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('bh_theme')||'dark')}catch(e){document.documentElement.setAttribute('data-theme','dark')}</script>
+<script>
+// iPhone แอปบนหน้าจอโฮมบางเครื่อง: iOS ให้พื้นที่แอปไม่ถึงขอบล่างจอ ตรวจไว้ เพื่อไม่เว้นที่ว่างใต้แถบเมนู
+document.addEventListener('DOMContentLoaded', function () {
+  try {
+    var sa = navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+    if (!sa) return;
+    var pr = document.createElement('div'); pr.style.cssText = 'position:fixed;left:0;width:0;height:env(safe-area-inset-top)'; document.body.appendChild(pr);
+    var top = pr.getBoundingClientRect().height; pr.remove();
+    var sh = Math.max(screen.width, screen.height);
+    if (top > 0 && sh - window.innerHeight > 20) document.documentElement.classList.add('bh-short');
+  } catch (e) {}
+});
+</script>
 <style>
   :root { --font-anthropic-sans: "Noto Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif; }
   [hidden] { display: none !important; }
@@ -510,8 +523,9 @@
     html[data-theme] .bh-card { padding: 20px 18px 18px; }
     html[data-theme] .bh-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     html[data-theme] .bh-kpi-value { font-size: 1.25rem; }
-    .bhx-tabbar { display: flex; position: fixed; z-index: 60; left: 12px; right: 12px; bottom: max(10px, calc(env(safe-area-inset-bottom) - 10px)); height: 64px; border-radius: 28px; padding: 0 6px; align-items: center; justify-content: space-around;
-      background: var(--barbg); border: 1px solid var(--gb); box-shadow: 0 12px 34px rgba(0,0,0,.35); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+    .bhx-tabbar { display: flex; position: fixed; z-index: 60; left: 0; right: 0; bottom: 0; height: calc(62px + env(safe-area-inset-bottom)); border-radius: 24px 24px 0 0; padding: 0 8px env(safe-area-inset-bottom); align-items: center; justify-content: space-around;
+      background: var(--barbg); border: 1px solid var(--gb); border-bottom: 0; box-shadow: 0 -8px 28px rgba(0,0,0,.28); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+    html.bh-short .bhx-tabbar { height: 62px; padding-bottom: 0; }
     .bhx-tab { flex: 1; min-width: 0; height: 56px; border: 0; border-radius: 22px; background: none; color: var(--muted); font: inherit; font-size: 10.5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .bhx-tab svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
     .bhx-tab span { white-space: nowrap; }
@@ -3025,7 +3039,7 @@
 </script>
 <script>
   // ดึงข้อมูลเป็นชิ้นเล็ก ๆ พร้อมกันหลายชิ้น ชิ้นไหนสะดุดจะลองใหม่เฉพาะชิ้นนั้น
-  window.BH_VERSION = 'แอป 2026-11-17.9';
+  window.BH_VERSION = 'แอป 2026-11-17.10';
   function bhCall(fn, args, cb, fail, tries) {
     tries = tries || 1;
     var r = google.script.run.withSuccessHandler(cb).withFailureHandler(function (err) {
