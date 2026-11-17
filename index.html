@@ -3036,7 +3036,7 @@
 </script>
 <script>
   // ดึงข้อมูลเป็นชิ้นเล็ก ๆ พร้อมกันหลายชิ้น ชิ้นไหนสะดุดจะลองใหม่เฉพาะชิ้นนั้น
-  window.BH_VERSION = 'แอป 2026-11-17.7';
+  window.BH_VERSION = 'แอป 2026-11-17.8';
   function bhCall(fn, args, cb, fail, tries) {
     tries = tries || 1;
     var r = google.script.run.withSuccessHandler(cb).withFailureHandler(function (err) {
@@ -3052,7 +3052,7 @@
       onOk(JSON.parse(json), json);
       var t2 = Date.now();
       var st = document.getElementById('bh-status');
-      if (st) st.textContent = window.BH_USER ? 'สวัสดี ' + window.BH_USER : '';
+      if (st) { var pr = document.createElement('div'); pr.style.cssText = 'position:fixed;bottom:0;height:env(safe-area-inset-bottom);top:env(safe-area-inset-top);width:0'; document.body.appendChild(pr); var cs = getComputedStyle(pr); st.textContent = (window.BH_USER ? 'สวัสดี ' + window.BH_USER : '') + ' · v8 ' + window.innerHeight + '/' + screen.height + '/' + (getComputedStyle(document.documentElement).getPropertyValue('--app-h') || '-').trim() + '/' + parseInt(cs.height) + '/' + parseInt(cs.top) + (navigator.standalone ? '/sa' : ''); pr.remove(); }
       if (st) st.title = 'เวอร์ชัน ' + window.BH_VERSION + ' · โหลด ' + ((t2 - t0) / 1000).toFixed(1) + ' วิ (รอ Google ' + ((t1 - t0) / 1000).toFixed(1) + ' · คำนวณ ' + ((t2 - t1) / 1000).toFixed(1) + ')' + (info && info.cached ? ' · แคช' : '');
     }
     if (onProgress) onProgress('กำลังเตรียมข้อมูล…');
