@@ -523,15 +523,15 @@ document.addEventListener('DOMContentLoaded', function () {
     html[data-theme] .bh-card { padding: 20px 18px 18px; }
     html[data-theme] .bh-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     html[data-theme] .bh-kpi-value { font-size: 1.25rem; }
-    .bhx-tabbar { display: flex; position: fixed; z-index: 60; left: 0; right: 0; bottom: 0; height: calc(62px + env(safe-area-inset-bottom)); border-radius: 24px 24px 0 0; padding: 0 8px env(safe-area-inset-bottom); align-items: center; justify-content: space-around;
-      background: var(--barbg); border: 1px solid var(--gb); border-bottom: 0; box-shadow: 0 -8px 28px rgba(0,0,0,.28); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
-    html.bh-short .bhx-tabbar { height: 62px; padding-bottom: 0; }
-    .bhx-tab { flex: 1; min-width: 0; height: 56px; border: 0; border-radius: 22px; background: none; color: var(--muted); font: inherit; font-size: 10.5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-    .bhx-tab svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
+    .bhx-tabbar { display: flex; position: fixed; z-index: 60; left: 0; right: 0; bottom: 0; height: calc(52px + max(6px, env(safe-area-inset-bottom) - 14px)); border-radius: 20px 20px 0 0; padding: 0 6px max(6px, calc(env(safe-area-inset-bottom) - 14px)); align-items: center; justify-content: space-around;
+      background: var(--barbg); border-top: 1px solid var(--gb); box-shadow: 0 -6px 22px rgba(0,0,0,.22); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+    html.bh-short .bhx-tabbar { height: 52px; padding-bottom: 0; }
+    .bhx-tab { flex: 1; min-width: 0; height: 48px; border: 0; background: none; color: var(--muted); font: inherit; font-size: 10px; letter-spacing: .1px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .bhx-tab svg { width: 34px; height: 24px; padding: 3px 8px; box-sizing: border-box; border-radius: 12px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: background .2s ease, transform .2s ease; }
     .bhx-tab span { white-space: nowrap; }
-    .bhx-tab.is-on { color: var(--acc); font-weight: 600; background: var(--acc-soft); }
-    .bhx-tab.is-on svg { transform: translateY(-1px) scale(1.08); }
-    html[data-theme=dark] .bhx-tab.is-on svg { filter: drop-shadow(0 0 6px rgba(255,60,40,.7)); }
+    .bhx-tab.is-on { color: var(--acc); font-weight: 600; }
+    .bhx-tab.is-on svg { background: var(--acc-soft); width: 46px; }
+    html[data-theme=dark] .bhx-tab.is-on svg { filter: drop-shadow(0 0 5px rgba(255,60,40,.55)); }
     body:has(#bh-loading) .bhx-tabbar { display: none; }
   }
 
@@ -3039,7 +3039,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <script>
   // ดึงข้อมูลเป็นชิ้นเล็ก ๆ พร้อมกันหลายชิ้น ชิ้นไหนสะดุดจะลองใหม่เฉพาะชิ้นนั้น
-  window.BH_VERSION = 'แอป 2026-11-17.10';
+  window.BH_VERSION = 'แอป 2026-11-17.11';
   function bhCall(fn, args, cb, fail, tries) {
     tries = tries || 1;
     var r = google.script.run.withSuccessHandler(cb).withFailureHandler(function (err) {
