@@ -15,6 +15,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('bh_theme')||'dark')}catch(e){document.documentElement.setAttribute('data-theme','dark')}</script>
+<script>
+// iPhone แอปบนหน้าจอโฮม: iOS ให้ความสูงหน้าจอน้อยกว่าจริง (ขาดเท่าแถบสถานะ) ทำให้มีแถบดำด้านล่าง วัดความสูงจริงแทน
+(function () {
+  function fit() {
+    var h = window.innerHeight, sa = navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+    if (sa && /iPhone|iPad|iPod/.test(navigator.userAgent)) { var land = Math.abs(window.orientation || 0) === 90; var sh = land ? Math.min(screen.width, screen.height) : Math.max(screen.width, screen.height); if (sh > h) h = sh; }
+    document.documentElement.style.setProperty('--app-h', h + 'px');
+  }
+  fit(); window.addEventListener('resize', fit); window.addEventListener('orientationchange', function () { setTimeout(fit, 300); });
+})();
+</script>
 <style>
   :root { --font-anthropic-sans: "Noto Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif; }
   [hidden] { display: none !important; }
@@ -425,7 +436,7 @@
     color-scheme: light;
   }
   html[data-theme] body, html[data-theme] { background: var(--pg); background-attachment: fixed; }
-  html[data-theme] #bh-scroller { background: var(--pg); }
+  html[data-theme] #bh-scroller { background: var(--pg); bottom: auto; height: var(--app-h, 100%); }
   html[data-theme] .bh { background: transparent; border-radius: 0; overflow: visible; color: var(--fg); }
   html[data-theme] #bh-loading { color: var(--muted); }
   /* หัวแอป */
@@ -510,7 +521,7 @@
     html[data-theme] .bh-card { padding: 20px 18px 18px; }
     html[data-theme] .bh-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     html[data-theme] .bh-kpi-value { font-size: 1.25rem; }
-    .bhx-tabbar { display: flex; position: fixed; z-index: 60; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); height: 64px; border-radius: 28px; padding: 0 6px; align-items: center; justify-content: space-around;
+    .bhx-tabbar { display: flex; position: fixed; z-index: 60; left: 12px; right: 12px; bottom: auto; top: calc(var(--app-h, 100vh) - 64px - max(10px, env(safe-area-inset-bottom) - 12px)); height: 64px; border-radius: 28px; padding: 0 6px; align-items: center; justify-content: space-around;
       background: var(--barbg); border: 1px solid var(--gb); box-shadow: 0 12px 34px rgba(0,0,0,.35); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
     .bhx-tab { flex: 1; min-width: 0; height: 56px; border: 0; border-radius: 22px; background: none; color: var(--muted); font: inherit; font-size: 10.5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .bhx-tab svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
@@ -3025,7 +3036,7 @@
 </script>
 <script>
   // ดึงข้อมูลเป็นชิ้นเล็ก ๆ พร้อมกันหลายชิ้น ชิ้นไหนสะดุดจะลองใหม่เฉพาะชิ้นนั้น
-  window.BH_VERSION = 'แอป 2026-11-17.6';
+  window.BH_VERSION = 'แอป 2026-11-17.7';
   function bhCall(fn, args, cb, fail, tries) {
     tries = tries || 1;
     var r = google.script.run.withSuccessHandler(cb).withFailureHandler(function (err) {
