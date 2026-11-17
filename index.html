@@ -7,13 +7,14 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#0b0606">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Ba hao">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('bh_theme')||'dark')}catch(e){document.documentElement.setAttribute('data-theme','dark')}</script>
 <style>
   :root { --font-anthropic-sans: "Noto Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif; }
   [hidden] { display: none !important; }
@@ -394,6 +395,133 @@
   @media (prefers-reduced-motion: no-preference) { .bh-card, .bh-tab, .bh-rail-btn, .bh-sumrow { transition: background .2s ease, color .2s ease; } }
 </style>
 
+<nav class="bhx-tabbar" aria-label="หน้า"><button type="button" class="bhx-tab is-on" data-tab="p-overview"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v8.5a.5.5 0 0 1-.5.5H15v-6H9v6H4.5a.5.5 0 0 1-.5-.5z"/></svg><span>ภาพรวม</span></button><button type="button" class="bhx-tab" data-tab="p-products"><svg viewBox="0 0 24 24"><path d="M6 4h12l-1.5 8a4.5 4.5 0 0 1-9 0z"/><path d="M12 16.5V20M8.5 20h7"/></svg><span>เมนู</span></button><button type="button" class="bhx-tab" data-tab="p-special"><svg viewBox="0 0 24 24"><path d="M12 4l2.4 5 5.4.6-4 3.7 1.1 5.3L12 16l-4.9 2.6 1.1-5.3-4-3.7 5.4-.6z"/></svg><span>Special</span></button><button type="button" class="bhx-tab" data-tab="p-analysis"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg><span>วิเคราะห์</span></button><button type="button" class="bhx-tab" data-tab="p-ent"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9.8A4 4 0 0 1 12 7.6a4 4 0 0 1 7 2.6C19 15.6 12 20 12 20z"/></svg><span>Entertain</span></button></nav>
+<style id="bhx-theme">
+  /* ===== ดีไซน์ใหม่: โทนมืด (แดงนีออน) / โทนสว่าง (พาสเทล) ===== */
+  html[data-theme=dark], html[data-theme=dark] .bh {
+    --pg: radial-gradient(120% 55% at 85% -8%, #5a0d08 0%, transparent 55%), radial-gradient(90% 45% at -15% 55%, #3b0806 0%, transparent 60%), #0b0606;
+    --hdr: rgba(14,7,6,.72); --barbg: rgba(26,12,10,.86);
+    --gl: rgba(255,255,255,.06); --gl2: rgba(255,255,255,.11); --gb: rgba(255,255,255,.11); --sub: rgba(255,255,255,.045);
+    --sh: 0 10px 30px rgba(0,0,0,.45); --glow: 0 0 18px rgba(255,60,40,.5);
+    --acc: #ff4433; --acc-soft: rgba(255,68,51,.16);
+    --bg: transparent; --panel: var(--gl); --panel-line: var(--gb); --fg: #f6ede6; --muted: #b8a8a0;
+    --ink: #f6ede6; --ink-2: #b8a8a0; --line-l: rgba(255,255,255,.12); --track: rgba(255,255,255,.1); --grid: rgba(255,255,255,.08);
+    --up: #5fe39a; --down: #ff7a6b; --yellow: var(--acc);
+    --hi: #ff5a44; --hi2: #ff9d8a; --bar: #7a5f58; --ly: #5f524d; --ly2: #8c7d76; --th: #1d100e;
+    --r0: rgba(120,140,255,.16); --r1: rgba(90,210,225,.14); --r2: rgba(95,227,154,.13); --r3: rgba(240,220,110,.13); --r4: rgba(255,150,110,.15); --r5: rgba(190,150,255,.15);
+    color-scheme: dark;
+  }
+  html[data-theme=light], html[data-theme=light] .bh {
+    --pg: radial-gradient(90% 45% at 95% 0%, #ffd9e2 0%, transparent 60%), radial-gradient(80% 45% at -5% 35%, #e3e6ff 0%, transparent 60%), radial-gradient(80% 45% at 100% 85%, #d8f1ff 0%, transparent 60%), #f6f1f4;
+    --hdr: rgba(246,241,244,.78); --barbg: rgba(255,255,255,.9);
+    --gl: rgba(255,255,255,.66); --gl2: rgba(255,255,255,.92); --gb: rgba(255,255,255,.95); --sub: rgba(255,255,255,.55);
+    --sh: 0 10px 30px rgba(120,80,100,.13); --glow: none;
+    --acc: #e8475f; --acc-soft: rgba(232,71,95,.12);
+    --bg: transparent; --panel: var(--gl); --panel-line: var(--gb); --fg: #1f1a1d; --muted: #73686e;
+    --ink: #1f1a1d; --ink-2: #73686e; --line-l: rgba(31,26,29,.1); --track: rgba(31,26,29,.07); --grid: rgba(31,26,29,.08);
+    --up: #1f8a52; --down: #d63c4c; --yellow: var(--acc);
+    --hi: #e8475f; --hi2: #f29aa7; --bar: #dccbd1; --ly: #cdbfc5; --ly2: #e2d8dc; --th: #fbf7f9;
+    --r0: #e6ebff; --r1: #e1f6f8; --r2: #e1f6ea; --r3: #faf6dc; --r4: #fbe9e0; --r5: #efe8fa;
+    color-scheme: light;
+  }
+  html[data-theme] body, html[data-theme] { background: var(--pg); background-attachment: fixed; }
+  html[data-theme] #bh-scroller { background: var(--pg); }
+  html[data-theme] .bh { background: transparent; border-radius: 0; overflow: visible; color: var(--fg); }
+  html[data-theme] #bh-loading { color: var(--muted); }
+  /* หัวแอป */
+  .bhx-top { position: sticky; top: -12px; z-index: 30; display: flex; align-items: center; gap: 10px; margin: -34px -38px 0; padding: calc(22px + env(safe-area-inset-top)) 38px 10px; background: var(--hdr); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
+  .bhx-logo { width: 34px; height: 38px; flex: none; overflow: visible; }
+  .bhx-logo path { fill: none; stroke: var(--acc); stroke-width: 9; }
+  .bhx-logo text { fill: var(--acc); font-family: "PingFang TC", "Hiragino Sans", "IPAGothic", serif; }
+  html[data-theme=dark] .bhx-logo { filter: drop-shadow(0 0 5px rgba(255,60,40,.8)); }
+  .bhx-brand { font-weight: 700; font-size: 19px; line-height: 1.15; color: var(--fg); min-width: 0; }
+  .bhx-brand span { display: block; font-weight: 500; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bhx-icon, html[data-theme] .bh-refresh.bhx-icon { flex: none; width: 38px; height: 38px; min-height: 38px; padding: 0; border-radius: 50%; display: grid; place-items: center; gap: 0; background: var(--gl); border: 1px solid var(--gb); color: var(--fg); box-shadow: var(--sh); cursor: pointer; }
+  #bh-theme { margin-left: auto; }
+  .bhx-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .bh-refresh.bhx-icon span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  html[data-theme=dark] #bh-theme .moon, html[data-theme=light] #bh-theme .sun { display: none; }
+  /* การ์ดกระจก */
+  html[data-theme] .bh-card, html[data-theme] .bh-kpi, html[data-theme] .bh-datepick, html[data-theme] .bh-datepill, html[data-theme] .bh-tabs, html[data-theme] #bh-setup {
+    background: var(--gl); border: 1px solid var(--gb); box-shadow: var(--sh); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); color: var(--ink);
+  }
+  html[data-theme] .bh-card::before { background-image: radial-gradient(circle, var(--ink-2) 1.2px, transparent 1.4px); opacity: .5; }
+  html[data-theme] .bh-kpi-value, html[data-theme] .bh-kpi-label { color: var(--fg); }
+  html[data-theme] .bh-title { color: var(--fg); }
+  html[data-theme] .bh-lede { color: var(--muted); } html[data-theme] .bh-lede b { color: var(--fg); }
+  html[data-theme] .bh-note { border-color: var(--line-l); color: var(--muted); }
+  html[data-theme] .dash-select { background-color: var(--gl); color: var(--fg); border: 1px solid var(--gb); }
+  /* ตาราง */
+  html[data-theme] .bh-tablewrap { background: var(--sub); }
+  html[data-theme] .bh-card .bh-table th, html[data-theme] .bh-12 .bh-table th { background: var(--th); }
+  html[data-theme] #peak-table th:first-child, html[data-theme] #peak-table td:first-child, html[data-theme] #peak-table thead th:first-child { background: var(--th); box-shadow: 6px 0 8px -6px rgba(0,0,0,.35); }
+  html[data-theme] .bh-table tbody tr:hover td { background: var(--sub); }
+  html[data-theme] #top-table td:nth-child(3) { background: var(--sub); }
+  html[data-theme] .bh-heat td.h.is-sel { outline-color: var(--ink); }
+  html[data-theme] .bh-peak-detail, html[data-theme] .bh-empty { background: var(--sub); color: var(--ink); }
+  /* ปุ่ม/ป้าย */
+  html[data-theme] .bh-seg, html[data-theme] .bh-topmonth { background: var(--track); }
+  html[data-theme] .bh-seg button { color: var(--ink-2); }
+  html[data-theme] .bh-seg button.is-on { background: var(--acc); color: #fff; box-shadow: var(--glow); }
+  html[data-theme] .bh-topmonth button, html[data-theme] .bh-topmonth select, html[data-theme] .bh-chgsort select { color: var(--ink); }
+  html[data-theme] .bh-topmonth select, html[data-theme] .bh-chgsort select { background: var(--gl2); }
+  html[data-theme] .bh-pillbtn { background: var(--acc); color: #fff; }
+  html[data-theme] .bh-pillbtn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line-l); }
+  html[data-theme] .bh-input, html[data-theme] .bh-search { background: var(--sub); border-color: var(--line-l); color: var(--ink); }
+  html[data-theme] .bh-search input { color: var(--ink); }
+  html[data-theme] .bh-tag { background: var(--acc); color: #fff; }
+  html[data-theme] .bh-tag-good { background: var(--up-bg); color: #0f2a1b; } html[data-theme] .bh-tag-bad { background: var(--down-bg); color: #3a120a; }
+  html[data-theme] .bh-exec li::before { background: var(--acc); }
+  html[data-theme] .bh-chip { background: var(--acc); color: #fff; } html[data-theme] .bh-chip button { background: rgba(255,255,255,.25); color: #fff; }
+  html[data-theme] .bh-dp-x { background: var(--acc); color: #fff; }
+  html[data-theme] .bh-dp-ico { stroke: var(--acc); }
+  html[data-theme] .bh-dp-f input { background: var(--sub); border-color: var(--line-l); color: var(--fg); color-scheme: inherit; }
+  html[data-theme] .bh-rank-i { background: var(--sub); } html[data-theme] .bh-rank-i:first-child { background: var(--gl2); }
+  html[data-theme] .bh-rank-n { background: var(--acc); color: #fff; box-shadow: var(--glow); }
+  html[data-theme] .bh-rank-i:not(:first-child) .bh-rank-n { background: var(--track); color: var(--ink); box-shadow: none; }
+  html[data-theme] .bh-rank-bar { background: var(--track); }
+  html[data-theme] .bh-sumrow { color: var(--ink); box-shadow: none; }
+  html[data-theme] .bh-sumrow::before { border-color: var(--ink-2); }
+  html[data-theme] .bh-sumrow.is-active { outline-color: var(--acc); } html[data-theme] .bh-sumrow.is-active::before { background: var(--acc); border-color: var(--acc); }
+  html[data-theme] .bh-sumrow .p { background: var(--gl2); }
+  html[data-theme] .r0 { background: var(--r0); } html[data-theme] .r1 { background: var(--r1); } html[data-theme] .r2 { background: var(--r2); }
+  html[data-theme] .r3 { background: var(--r3); } html[data-theme] .r4 { background: var(--r4); } html[data-theme] .r5 { background: var(--r5); }
+  html[data-theme] .bh-legend-l li:hover { background: var(--sub); }
+  html[data-theme] .bh-tab { color: var(--muted); } html[data-theme] .bh-tab.is-on { background: var(--acc); color: #fff; }
+  html[data-theme] .bh-tab .n { border-color: var(--line-l); } html[data-theme] .bh-tab.is-on .n { background: #fff; color: var(--acc); border-color: #fff; }
+  html[data-theme] .bh-rail-btn.is-on, html[data-theme] .bh-logo { background: var(--acc); color: #fff; }
+  html[data-theme] .bh-rail { border-right-color: var(--line-l); }
+  /* หน้าใส่ PIN */
+  html[data-theme] #bh-setup { color: var(--fg); }
+  html[data-theme] #bh-setup h2 { color: var(--acc); }
+  html[data-theme] #bh-setup input { background: var(--sub); border-color: var(--line-l); color: var(--fg); }
+  html[data-theme] #bh-setup button { background: var(--acc); color: #fff; }
+  /* เปลี่ยนหน้าแบบนุ่ม ๆ */
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes bhx-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    .bh-page:not([hidden]) { animation: bhx-in .3s ease; }
+  }
+  /* แถบเมนูล่าง (มือถือ) */
+  .bhx-tabbar { display: none; }
+  @media (max-width: 860px) {
+    .bhx-top { margin: -28px -28px 0; padding-left: 28px; padding-right: 28px; }
+    html[data-theme] .bh-tabs { display: none; }
+    html[data-theme] .bh-title { display: none; }
+    html[data-theme] .bh-card { padding: 20px 18px 18px; }
+    html[data-theme] .bh-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    html[data-theme] .bh-kpi-value { font-size: 1.25rem; }
+    .bhx-tabbar { display: flex; position: fixed; z-index: 60; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); height: 64px; border-radius: 28px; padding: 0 6px; align-items: center; justify-content: space-around;
+      background: var(--barbg); border: 1px solid var(--gb); box-shadow: 0 12px 34px rgba(0,0,0,.35); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+    .bhx-tab { flex: 1; min-width: 0; height: 56px; border: 0; border-radius: 22px; background: none; color: var(--muted); font: inherit; font-size: 10.5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .bhx-tab svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
+    .bhx-tab span { white-space: nowrap; }
+    .bhx-tab.is-on { color: var(--acc); font-weight: 600; background: var(--acc-soft); }
+    .bhx-tab.is-on svg { transform: translateY(-1px) scale(1.08); }
+    html[data-theme=dark] .bhx-tab.is-on svg { filter: drop-shadow(0 0 6px rgba(255,60,40,.7)); }
+    body:has(#bh-loading) .bhx-tabbar { display: none; }
+  }
+
+</style>
 <div class="bh-wrap">
 <div class="bh" id="bh">
   <nav class="bh-rail" id="rail" aria-label="หน้า">
@@ -406,6 +534,12 @@
   </nav>
 
   <main class="bh-main">
+    <header class="bhx-top">
+      <svg class="bhx-logo" viewBox="-60 -122 120 244" aria-hidden="true"><path d="M -14 -38 A 42 42 0 1 1 14 -38 A 58 58 0 1 1 -14 -38 Z"/><text x="0" y="-62" font-size="54" text-anchor="middle">八</text><text x="0" y="62" font-size="72" text-anchor="middle">號</text></svg>
+      <div class="bhx-brand">Ba hao<span id="bh-status" aria-live="polite"></span></div>
+      <button type="button" class="bhx-icon" id="bh-theme" aria-label="สลับโทนสว่าง/มืด" title="สลับโทนสว่าง/มืด"><svg class="moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg></button>
+      <button type="button" class="bh-refresh bhx-icon" id="bh-refresh" aria-label="รีเฟรชข้อมูล"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg><span>รีเฟรช</span></button>
+    </header>
     <div class="bh-topbar">
       <div class="bh-tabs" role="tablist" aria-label="หมวดของแดชบอร์ด">
         <button type="button" class="bh-tab is-on" role="tab" data-tab="p-overview"><span class="n">01</span>ภาพรวม</button>
@@ -416,8 +550,7 @@
       </div>
       <div class="bh-controls" id="controls">
         <div class="bh-datepick" id="date-range" data-draw="range-picker" role="group" aria-label="เลือกช่วงวันที่"></div>
-        <button type="button" class="bh-refresh" id="bh-refresh" aria-label="รีเฟรชข้อมูล"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg><span>รีเฟรช</span></button>
-        <span class="bh-dp-n" id="bh-status" aria-live="polite"></span>
+
         <label class="bh-field" for="bh-month">
           <select id="bh-month" class="dash-select" data-draw="month" aria-label="เลือกเดือน"></select>
         </label>
@@ -1010,7 +1143,7 @@
   BH.f2 = (v) => (Math.round(+v) === +v ? d3.format(',.0f')(v) : d3.format(',.2f')(v));
   BH.fmt = (field, v) => BH.f0(v);
   BH.metricLabel = { sales: 'ยอดขาย', qty: 'จำนวน' };
-  BH.pal = ['#2f6e52', '#56a47e', '#f6a96b', '#ffd79c', '#6c5fa3', '#a99ad6', '#d9765a', '#e8cf7a', '#4f8aa3', '#8c8a6c', '#c7c2b2', '#3c3c38'];
+  BH.pal = ['#2f6e52', '#56a47e', '#f6a96b', '#ffd79c', '#6c5fa3', '#a99ad6', '#d9765a', '#e8cf7a', '#4f8aa3', '#8c8a6c', '#c7c2b2', '#8f8a80'];
   BH.inCat = (r) => !BH.cat || r.category === BH.cat;
   BH.curMonth = () => {
     const m = dash.data('months');
@@ -1042,8 +1175,8 @@
     let defs = svg.select('defs');
     if (defs.empty()) defs = svg.append('defs');
     const g = defs.append('linearGradient').attr('id', id).attr('x1', 0).attr('y1', vertical ? 1 : 0).attr('x2', vertical ? 0 : 1).attr('y2', 0);
-    g.append('stop').attr('offset', '0%').attr('stop-color', c1);
-    g.append('stop').attr('offset', '100%').attr('stop-color', c2);
+    g.append('stop').attr('offset', '0%').style('stop-color', c1);
+    g.append('stop').attr('offset', '100%').style('stop-color', c2);
     return `url(#${id})`;
   };
   BH.empty = (el, msg) => { el.replaceChildren(); const d = document.createElement('div'); d.className = 'bh-empty'; d.textContent = msg; el.appendChild(d); };
@@ -2308,7 +2441,7 @@
     const svg = box.append('svg').attr('width', '100%').attr('height', H + 18).attr('viewBox', `0 0 ${W} ${H + 18}`).attr('role', 'img')
       .attr('aria-label', `ยอดถึงตอนนี้ ${BH.f0(r.sales)} บาท คาดการณ์ ${BH.f0(r.forecast)} บาท เป้า ${BH.f0(t.target)} บาท`);
     svg.append('rect').attr('y', 6).attr('width', W).attr('height', 18).attr('rx', 9).style('fill', 'var(--track)');
-    if (!r.complete) svg.append('rect').attr('y', 6).attr('width', Math.min(W, x(r.forecast))).attr('height', 18).attr('rx', 9).style('fill', '#1b1b1922');
+    if (!r.complete) svg.append('rect').attr('y', 6).attr('width', Math.min(W, x(r.forecast))).attr('height', 18).attr('rx', 9).style('fill', 'var(--track)');
     svg.append('rect').attr('y', 6).attr('width', Math.max(10, x(r.sales))).attr('height', 18).attr('rx', 9).style('fill', '#2f6e52');
     svg.append('line').attr('x1', x(t.target)).attr('x2', x(t.target)).attr('y1', 0).attr('y2', 30).style('stroke', 'var(--ink)').style('stroke-width', 2);
     svg.append('text').attr('x', Math.min(W - 2, Math.max(2, x(t.target)))).attr('y', H + 14).attr('text-anchor', x(t.target) > W - 40 ? 'end' : 'middle').style('font-size', '11px').style('fill', 'var(--ink-2)').text('เป้า');
@@ -2394,7 +2527,7 @@
     rows.forEach((r) => {
       const g = svg.append('g').attr('transform', `translate(${x(r.order)},0)`);
       if (r.avg != null) {
-        g.append('rect').attr('y', y(r.avg)).attr('width', x.bandwidth()).attr('height', y(0) - y(r.avg)).attr('rx', Math.min(10, x.bandwidth() / 2)).style('fill', r.avg === best ? '#2b2b28' : '#8c8a6c');
+        g.append('rect').attr('y', y(r.avg)).attr('width', x.bandwidth()).attr('height', y(0) - y(r.avg)).attr('rx', Math.min(10, x.bandwidth() / 2)).style('fill', r.avg === best ? 'var(--hi)' : 'var(--bar)');
         if (x.bandwidth() >= 40) g.append('text').attr('x', x.bandwidth() / 2).attr('y', y(r.avg) - 6).attr('text-anchor', 'middle').style('font-size', '11px').style('fill', 'var(--ink)').style('font-variant-numeric', 'tabular-nums')
           .attr('data-source', 'weekday').attr('data-field', 'avg').attr('data-where', 'order=' + r.order).text(BH.f0(r.avg));
       }
@@ -2439,7 +2572,7 @@
     const cat = BH.cat || 'ทั้งหมด';
     return d.data.filter((r) => r.category === cat);
   };
-  BH.ymColors = ['#a9a890', '#f6a96b', '#2b2b28', '#6c5fa3', '#56a47e'];
+  BH.ymColors = ['var(--ly2)', '#f6a96b', 'var(--hi)', '#6c5fa3', '#56a47e'];
   BH.ymWhere = (r) => `year=${r.year}&mon=${r.mon}&category=${BH.enc(r.category)}`;
 
   dash.draw('ym-chart', (el) => {
@@ -2630,7 +2763,7 @@
       d.textContent = `ยังไม่มีข้อมูลของปี ${rows[0].year - 1} ให้เทียบ ส่งรายงานของเดือนเดียวกันในปีก่อนมา แล้ว % ขึ้นลงจะแสดงเอง`;
       el.appendChild(d);
     }
-    const series = [['ly_sales', 'ปีก่อน', '#8b8a74', '#a9a890'], ['sales', 'ปีนี้', '#2b2b28', '#5e5d57']];
+    const series = [['ly_sales', 'ปีก่อน', 'var(--ly)', 'var(--ly2)'], ['sales', 'ปีนี้', 'var(--hi)', 'var(--hi2)']];
     const W = Math.max(280, el.clientWidth || 600), H = 270, mL = 4, mB = 30, mT = 50;
     const x0 = d3.scaleBand().domain(rows.map((r) => r.month)).range([mL, W]).paddingInner(0.25).paddingOuter(0.1);
     const gw = Math.min(x0.bandwidth(), 120);
@@ -2873,7 +3006,15 @@
       tabs.forEach((t) => { const on = t.getAttribute('data-tab') === id; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', String(on)); });
       if (link) dash.setLink(id);
     };
-    tabs.forEach((t) => t.addEventListener('click', () => show(t.getAttribute('data-tab'), true)));
+    tabs.forEach((t) => t.addEventListener('click', () => { const was = t.classList.contains('is-on'); show(t.getAttribute('data-tab'), true); if (t.classList.contains('bhx-tab')) { const sc = document.getElementById('bh-scroller'); if (sc) sc.scrollTo({ top: 0, behavior: was ? 'smooth' : 'auto' }); } }));
+    const tb = document.getElementById('bh-theme');
+    if (tb) tb.addEventListener('click', () => {
+      const r = document.documentElement, nx = r.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      r.setAttribute('data-theme', nx);
+      try { localStorage.setItem('bh_theme', nx); } catch (e) {}
+      const m = document.querySelector('meta[name=theme-color]'); if (m) m.setAttribute('content', nx === 'light' ? '#f6f1f4' : '#0b0606');
+      dash.setParams({});
+    });
     const h = (location.hash || '').slice(1);
     const target = h && document.getElementById(h);
     const page = target && target.closest('[data-page]');
@@ -2884,7 +3025,7 @@
 </script>
 <script>
   // ดึงข้อมูลเป็นชิ้นเล็ก ๆ พร้อมกันหลายชิ้น ชิ้นไหนสะดุดจะลองใหม่เฉพาะชิ้นนั้น
-  window.BH_VERSION = 'แอป 2026-11-17.5';
+  window.BH_VERSION = 'แอป 2026-11-17.6';
   function bhCall(fn, args, cb, fail, tries) {
     tries = tries || 1;
     var r = google.script.run.withSuccessHandler(cb).withFailureHandler(function (err) {
@@ -2900,7 +3041,7 @@
       onOk(JSON.parse(json), json);
       var t2 = Date.now();
       var st = document.getElementById('bh-status');
-      if (st) st.textContent = window.BH_USER ? 'ผู้ใช้: ' + window.BH_USER : '';
+      if (st) st.textContent = window.BH_USER ? 'สวัสดี ' + window.BH_USER : '';
       if (st) st.title = 'เวอร์ชัน ' + window.BH_VERSION + ' · โหลด ' + ((t2 - t0) / 1000).toFixed(1) + ' วิ (รอ Google ' + ((t1 - t0) / 1000).toFixed(1) + ' · คำนวณ ' + ((t2 - t1) / 1000).toFixed(1) + ')' + (info && info.cached ? ' · แคช' : '');
     }
     if (onProgress) onProgress('กำลังเตรียมข้อมูล…');
@@ -2983,14 +3124,14 @@
     window.bhCacheGet().then(function (c) {
       var shown = false;
       if (c && c.json) {
-        try { if (l) l.remove(); dash._load(JSON.parse(c.json)); shown = true; bhSetStatus((window.bhStore('bh_user') ? 'ผู้ใช้: ' + window.bhStore('bh_user') : '')); } catch (e) { shown = false; }
+        try { if (l) l.remove(); dash._load(JSON.parse(c.json)); shown = true; bhSetStatus((window.bhStore('bh_user') ? 'สวัสดี ' + window.bhStore('bh_user') : '')); } catch (e) { shown = false; }
       }
       window.bhFetch(
         function (p, json) { var ll = document.getElementById('bh-loading'); if (ll) ll.remove(); dash._load(p); window.bhCacheSet({ json: json, at: Date.now() }); },
         function (err) {
           if (err && err.auth) return window.bhAuthFailed(err, shown);
           var why = err && err.message ? err.message : err;
-          if (shown) { bhSetStatus((window.bhStore('bh_user') ? 'ผู้ใช้: ' + window.bhStore('bh_user') + ' · ' : '') + 'ไม่มีเน็ต (ข้อมูลเมื่อ ' + bhStamp(c.at) + ')'); return; }
+          if (shown) { bhSetStatus((window.bhStore('bh_user') ? 'สวัสดี ' + window.bhStore('bh_user') + ' · ' : '') + 'ไม่มีเน็ต (ข้อมูลเมื่อ ' + bhStamp(c.at) + ')'); return; }
           var ll = document.getElementById('bh-loading'); if (!ll) return;
           ll.textContent = 'โหลดข้อมูลไม่สำเร็จ (' + why + ') ตรวจสัญญาณเน็ต แล้วกดลองใหม่ ';
           var b = document.createElement('button'); b.type = 'button'; b.className = 'bh-refresh'; b.textContent = 'ลองใหม่';
