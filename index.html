@@ -534,6 +534,27 @@ document.addEventListener('DOMContentLoaded', function () {
     html[data-theme=dark] .bhx-tab.is-on svg { filter: drop-shadow(0 0 5px rgba(255,60,40,.55)); }
     body:has(#bh-loading) .bhx-tabbar { display: none; }
   }
+  /* การ์ดหมวดสินค้า: ร้านพิกเซล / รายการ */
+  .bhx-cathead { display: flex; align-items: center; gap: 10px; }
+  .bhx-seg { margin-left: auto; display: inline-flex; padding: 3px; border-radius: 999px; background: var(--track); }
+  .bhx-seg button { font: inherit; font-size: 12px; border: 0; background: none; color: var(--ink-2); padding: 5px 12px; border-radius: 999px; cursor: pointer; }
+  .bhx-seg button.is-on { background: var(--acc); color: #fff; }
+  #category-list[data-view=shop] .bh-sumlist, #category-list[data-view=list] .bhx-shop { display: none; }
+  .bhx-shop-scene { position: relative; border-radius: 18px; overflow: hidden; line-height: 0; background: #140b10; }
+  html[data-theme=light] .bhx-shop-scene { background: #e9f1f7; }
+  .bhx-shop-cv { width: 100%; display: block; image-rendering: pixelated; cursor: pointer; }
+  .bhx-tag { position: absolute; transform: translate(-50%, -100%); display: inline-flex; align-items: center; gap: 5px; font: inherit; font-size: 10px; line-height: 1.3; white-space: nowrap; padding: 3px 8px 2px; border-radius: 9px; cursor: pointer;
+    background: var(--th); color: var(--ink); border: 1px solid var(--gb); box-shadow: 0 3px 12px rgba(0,0,0,.3); transition: opacity .2s; }
+  html[data-theme=dark] .bhx-tag { background: rgba(24,12,12,.88); }
+  .bhx-tag i { width: 7px; height: 7px; border-radius: 50%; flex: none; } .bhx-tag b { font-size: 11px; font-variant-numeric: tabular-nums; }
+  .bhx-tag.best { border-color: var(--acc); } .bhx-tag.on { border-color: var(--acc); box-shadow: 0 0 0 2px var(--acc), 0 3px 12px rgba(0,0,0,.3); } .bhx-tag.dim { opacity: .45; }
+  .bhx-shop-pop { position: absolute; z-index: 5; left: 50%; bottom: 8px; transform: translateX(-50%); width: min(240px, calc(100% - 16px)); box-sizing: border-box; padding: 8px; border-radius: 14px; line-height: 1.4; background: var(--th); border: 1px solid var(--gb); box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+  html[data-theme=dark] .bhx-shop-pop { background: #1d100e; }
+  .bhx-shop-pop .h { font-size: 11px; color: var(--ink-2); padding: 2px 6px 6px; }
+  .bhx-shop-pop button { display: flex; justify-content: space-between; gap: 12px; width: 100%; font: inherit; font-size: 13px; color: var(--ink); background: var(--sub); border: 0; border-radius: 10px; padding: 8px 10px; margin-top: 4px; cursor: pointer; }
+  .bhx-shop-pop button.on { outline: 2px solid var(--acc); }
+  .bhx-shop-tot { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; padding: 10px 14px; border-radius: 14px; background: var(--sub); font-size: 13px; color: var(--ink-2); cursor: pointer; }
+  .bhx-shop-tot b { font-size: 17px; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 </style>
 <div class="bh-wrap">
@@ -604,9 +625,10 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       </section>
 
-      <section class="bh-card c-sage s4" id="category-list">
-        <h2>หมวดสินค้า</h2>
-        <p class="bh-sub">กดหมวดเพื่อกรองทั้งแดชบอร์ด</p>
+      <section class="bh-card c-sage s4" id="category-list" data-view="shop">
+        <div class="bhx-cathead"><h2>หมวดสินค้า</h2><div class="bhx-seg" role="group" aria-label="มุมมอง"><button type="button" data-view="shop" class="is-on">ร้าน</button><button type="button" data-view="list">รายการ</button></div></div>
+        <p class="bh-sub">แตะมุมในร้านหรือหมวดเพื่อกรองทั้งแดชบอร์ด · มุมไหนขายดี ลูกค้ายิ่งเยอะ</p>
+        <div class="bhx-shop" data-draw="shop"><div class="bhx-shop-scene"></div><div class="bhx-shop-tot"></div></div>
         <div class="bh-sumlist" data-draw="catnav" data-source="categories"></div>
       </section>
 
@@ -1438,6 +1460,150 @@ document.addEventListener('DOMContentLoaded', function () {
       btn('ทุกหมวด', null, BH.mkOr('months', 'sales', 'month=' + BH.enc(m.month), BH.f0(m.sales)), 0),
       ...rows.map((r, i) => btn(r.category, r.category, BH.mkOr('categories', 'sales', `month=${BH.enc(r.month)}&category=${BH.enc(r.category)}`, BH.f0(r.sales)), i + 1)),
     );
+  });
+
+  // ===== ร้าน Ba hao แบบพิกเซล (การ์ดหมวดสินค้า) =====
+  BH.SHOP = [
+    { k: 'ค็อกเทล', cats: ['ค็อกเทล', 'ม็อกเทล'], c: '#ff4d3d', tp: [1.4, 4.8, 30] },
+    { k: 'ครัว', cats: ['อาหารจานหลัก', 'อาหารทานเล่น', 'ซุป', 'ข้าว / เครื่องเคียง'], c: '#ffa53d', tp: [8.1, 0.2, 46] },
+    { k: 'เบียร์', cats: ['เบียร์'], c: '#f6c84a', tp: [1.2, 8.2, 24] },
+    { k: 'ซอฟต์ดริงก์', cats: ['ซอฟต์ดริงก์'], c: '#4ab8ff', tp: [9.6, 4.4, 40] },
+    { k: 'สุรา / ไวน์', cats: ['สุรา / ช็อต', 'ไวน์'], c: '#b46cff', tp: [0.2, 2.0, 48] },
+    { k: 'ของหวาน', cats: ['ของหวาน'], c: '#ff7ab0', tp: [9.1, 8.6, 18] },
+  ];
+  BH.makeShop = (host) => {
+    const W = 232, H = 178, OX = 116, OY = 56, TW = 11, TH = 5.5, N = 10, WH = 50;
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H; cv.className = 'bhx-shop-cv';
+    const g = cv.getContext('2d'); g.imageSmoothingEnabled = false;
+    const tags = document.createElement('div'); tags.className = 'bhx-shop-tags';
+    const pop = document.createElement('div'); pop.className = 'bhx-shop-pop'; pop.hidden = true;
+    host.replaceChildren(cv, tags, pop);
+    const S = (i, j, z) => [Math.round(OX + (i - j) * TW), Math.round(OY + (i + j) * TH - z)];
+    const PAL = {
+      dark: { floorA: '#5b3b2b', floorB: '#4f3324', wallL: '#5a1f1c', wallLd: '#4a1916', wallR: '#3b2a33', trim: '#2a1512', win: '#0e1a33', winL: '#ffd27a', wood: '#8a5631', woodT: '#a8693d', woodD: '#5e3a20', metal: '#9aa3ad', metalT: '#c4ccd4', out: '#1a0f0c', rug: '#6a1e2a', rug2: '#8a2a36', kit: '#1a0d0b', fridge: '#3d7ab0', night: 1 },
+      light: { floorA: '#e9c9a3', floorB: '#e0bb92', wallL: '#f1d9cf', wallLd: '#e5c8bc', wallR: '#f7ece4', trim: '#c9a48a', win: '#bfe3ff', winL: '#ffffff', wood: '#b77945', woodT: '#d09160', woodD: '#8a5631', metal: '#b5bdc6', metalT: '#dde3e9', out: '#4a3226', rug: '#e86a7a', rug2: '#f29aa7', kit: '#5a4038', fridge: '#d9f0ff', night: 0 },
+    };
+    const SKIN = '#f3c9a2';
+    let C = PAL.dark;
+    const P = (x, y, w, h, c) => { g.fillStyle = c; g.fillRect(x | 0, y | 0, w, h); };
+    const poly = (pts, fill, stroke) => { g.beginPath(); pts.forEach(([x, y], k) => (k ? g.lineTo(x, y) : g.moveTo(x, y))); g.closePath(); g.fillStyle = fill; g.fill(); if (stroke) { g.strokeStyle = stroke; g.lineWidth = 1; g.stroke(); } };
+    const sh = (hex, k) => { const n = parseInt(hex.slice(1), 16); const f = (v) => Math.max(0, Math.min(255, Math.round(v * k))); return `rgb(${f(n >> 16)},${f((n >> 8) & 255)},${f(n & 255)})`; };
+    const box = (i, j, z, w, d, h, col, top) => { const o = C.out;
+      poly([S(i, j + d, z), S(i + w, j + d, z), S(i + w, j + d, z + h), S(i, j + d, z + h)], sh(col, 0.78), o);
+      poly([S(i + w, j, z), S(i + w, j + d, z), S(i + w, j + d, z + h), S(i + w, j, z + h)], sh(col, 0.92), o);
+      poly([S(i, j, z + h), S(i + w, j, z + h), S(i + w, j + d, z + h), S(i, j + d, z + h)], top || col, o); };
+    const SPR = ['..oooo..', '.ohhhho.', 'ohhhhhho', 'ohsssssh', 'osesseso', '.osssso.', '.occcco.', 'occcccco', 'osccccso', '.occcco.', '.oppppo.', '.op..po.'];
+    const person = (x, y, shirt, hair, bob, apron, dim) => { const pal = { o: C.out, h: hair, s: SKIN, c: shirt, p: '#2b2d42', e: '#1a1010' };
+      g.globalAlpha = dim ? 0.35 : 1; P(x - 1, y + 12, 10, 2, 'rgba(0,0,0,.22)');
+      SPR.forEach((row, r) => { for (let k = 0; k < 8; k++) { const ch = row[k]; if (!ch || ch === '.') continue; let col = pal[ch]; if (apron && ch === 'c' && r >= 7) col = '#ffffff'; P(x + k, y + r - (r < 6 ? bob : 0), 1, 1, col); } });
+      g.globalAlpha = 1; };
+    const shirts = ['#ff6b5a', '#5aa9ff', '#f6c84a', '#8fdcb2', '#c79bff', '#ff9a7a', '#7ad0d6', '#ffffff', '#ff7ab0'];
+    const hairs = ['#2a1a14', '#5a3a22', '#d9a441', '#1b1b1b', '#8a3a2a', '#e8e0d0'];
+    const spots = { 0: [[2.9, 3.0], [3.0, 4.2], [3.0, 5.4], [3.6, 3.6], [3.6, 4.8], [3.6, 6.0], [4.2, 4.2]], 1: [[7.2, 1.6], [8.2, 1.7], [7.7, 2.3]], 2: [[2.9, 7.8], [2.9, 8.8], [3.5, 8.2]], 3: [[8.4, 4.0], [8.3, 5.0]], 4: [[0.9, 0.9], [1.4, 1.4]], 5: [[8.0, 8.2]] };
+    const st = { v: BH.SHOP.map(() => 0), sel: -1 };
+    let steam = [], f = 0;
+    function draw() {
+      C = PAL[document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'];
+      g.clearRect(0, 0, W, H);
+      for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) poly([S(i, j, 0), S(i + 1, j, 0), S(i + 1, j + 1, 0), S(i, j + 1, 0)], (i + j) % 2 ? C.floorA : C.floorB);
+      poly([S(0, N, 0), S(N, N, 0), S(N, N, -5), S(0, N, -5)], sh(C.floorA, 0.6), C.out); poly([S(N, 0, 0), S(N, N, 0), S(N, N, -5), S(N, 0, -5)], sh(C.floorA, 0.75), C.out);
+      poly([S(3, 5, 0.2), S(7, 5, 0.2), S(7, 9, 0.2), S(3, 9, 0.2)], C.rug); poly([S(3.5, 5.5, 0.3), S(6.5, 5.5, 0.3), S(6.5, 8.5, 0.3), S(3.5, 8.5, 0.3)], C.rug2);
+      poly([S(0, 0, 0), S(0, N, 0), S(0, N, WH), S(0, 0, WH)], C.wallL, C.out); poly([S(0, 0, 0), S(N, 0, 0), S(N, 0, WH), S(0, 0, WH)], C.wallR, C.out);
+      g.save(); g.globalAlpha = 0.35; g.strokeStyle = C.wallLd; for (let z = 4; z < WH; z += 5) for (let j = ((z / 5) % 2) * 0.5; j < N; j += 1) { const [x1, y1] = S(0, j, z), [x2, y2] = S(0, j + 0.8, z); g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); } g.restore();
+      poly([S(0, 0, WH), S(0, N, WH), S(0, N, WH + 3), S(0, 0, WH + 3)], C.trim, C.out); poly([S(0, 0, WH), S(N, 0, WH), S(N, 0, WH + 3), S(0, 0, WH + 3)], C.trim, C.out);
+      for (const wi of [4.2, 6.6]) { poly([S(wi, 0, 14), S(wi + 1.8, 0, 14), S(wi + 1.8, 0, 38), S(wi, 0, 38)], C.win, C.out);
+        if (C.night) { for (let s = 0; s < 6; s++) { const [x, y] = S(wi + 0.25 + (s % 3) * 0.55, 0, 18 + Math.floor(s / 3) * 9); if ((f + s * 7) % 50 > 4) P(x, y, 1, 2, C.winL); } } else { const [x, y] = S(wi + 0.3, 0, 32); P(x, y, 3, 1, '#fff'); }
+        const [mx1, my1] = S(wi + 0.9, 0, 14), [mx2, my2] = S(wi + 0.9, 0, 38); g.strokeStyle = C.out; g.beginPath(); g.moveTo(mx1, my1); g.lineTo(mx2, my2); g.stroke(); }
+      const pulse = 0.8 + 0.2 * Math.sin(f / 3) - (f % 45 === 0 ? 0.5 : 0); const [nx, ny] = S(0, 5, 36);
+      g.save(); g.shadowColor = '#ff3322'; g.shadowBlur = 10 * pulse; g.strokeStyle = `rgba(255,80,60,${pulse})`; g.lineWidth = 1.3;
+      g.beginPath(); g.ellipse(nx, ny - 6, 4, 4.5, 0, 0, 7); g.stroke(); g.beginPath(); g.ellipse(nx, ny + 5, 6, 6.5, 0, 0, 7); g.stroke();
+      g.fillStyle = `rgba(255,140,110,${pulse})`; g.font = 'bold 6px serif'; g.textAlign = 'center'; g.fillText('八', nx, ny - 4); g.font = 'bold 8px serif'; g.fillText('號', nx, ny + 8); g.restore();
+      for (let s = 0; s < 2; s++) { const z = 22 + s * 10; poly([S(0.05, 0.6, z), S(0.05, 3.4, z), S(0.6, 3.4, z), S(0.6, 0.6, z)], C.woodD, C.out);
+        for (let b = 0; b < 7; b++) { const [x, y] = S(0.3, 0.9 + b * 0.37, z); const col = ['#3f8a5a', '#8a2c3c', '#c9a24a', '#d8d8e8', '#5a3a8a', '#2a6a8a', '#b46cff'][(b + s * 3) % 7]; P(x - 1, y - 6, 3, 6, col); P(x, y - 8, 1, 2, col); P(x - 1, y - 6, 1, 6, C.out); if ((f + b * 5 + s * 9) % 36 < 3) P(x, y - 5, 1, 2, '#fff'); } }
+      poly([S(6.8, 0, 10), S(9.4, 0, 10), S(9.4, 0, 30), S(6.8, 0, 30)], C.kit, C.out);
+      { const [x, y] = S(7.8, 0, 12); person(x - 4, y - 14, '#ffffff', hairs[3], f % 10 < 5 ? 1 : 0, true); P(x - 3, y - 17, 6, 3, '#ffffff'); P(x - 3, y - 17, 6, 1, C.out); }
+      { const [x, y] = S(8.9, 0, 12); const fl = [2, 4, 3, 5][f % 4]; P(x - 2, y - 2 - fl, 4, fl, '#ff7a1a'); P(x - 1, y - 1 - fl, 2, Math.max(1, fl - 1), '#ffd23a'); P(x - 4, y - 2, 8, 2, '#333'); }
+      if (f % 3 === 0) { const [sx, sy] = S(8.9, 0, 22); steam.push({ x: sx + (Math.random() * 4 - 2), y: sy, l: 10 }); }
+      steam.forEach((s) => { s.y -= 0.8; s.l--; P(s.x, s.y, 2, 2, `rgba(255,255,255,${s.l / 14})`); }); steam = steam.filter((s) => s.l > 0);
+      box(6.8, 0, 0, 2.6, 1.2, 10, C.metal, C.metalT);
+      [7.1, 7.8, 8.6].forEach((i) => { const [x, y] = S(i, 0.6, 10); P(x - 2, y - 2, 5, 2, '#fff'); P(x - 1, y - 3, 3, 1, '#c96a3a'); });
+      box(1.6, 2.4, 0, 1.1, 4.6, 10, C.wood, C.woodT); box(1.6, 2.4, 10, 1.1, 4.6, 1.5, C.woodD, sh(C.woodD, 1.15));
+      { const [x, y] = S(1.0, 4.2, 0); const shk = f % 6 < 3 ? -3 : 0; person(x - 4, y - 13, '#1b1b1b', hairs[0], 0, false); P(x + 4, y - 11 + shk, 2, 5, '#d8d8e8'); P(x + 4, y - 12 + shk, 2, 1, '#888'); }
+      [[2.1, 3.0, '#ff4433'], [2.1, 4.4, '#f6c84a'], [2.1, 5.8, '#8fdcb2']].forEach(([i, j, c]) => { const [x, y] = S(i, j, 11.5); P(x - 1, y - 4, 3, 1, '#eee'); P(x, y - 3, 1, 2, c); P(x - 1, y - 1, 3, 1, '#eee'); });
+      box(0.4, 7.4, 0, 2.2, 1.4, 10, C.wood, C.woodT);
+      { const [x, y] = S(1.3, 8, 10); P(x - 3, y - 8, 7, 3, C.metalT); P(x - 2, y - 5, 1, 3, '#222'); P(x + 2, y - 5, 1, 3, '#222'); P(x - 2, y - 10, 1, 2, '#f6c84a'); P(x + 2, y - 10, 1, 2, '#5a3a22');
+        const pour = f % 24; if (pour < 14) P(x - 2, y - 2, 1, 2, '#f6c84a'); const lvl = Math.min(5, Math.floor(pour / 3)); P(x - 4, y - lvl, 4, lvl, '#f6b84a'); if (lvl) P(x - 4, y - lvl - 1, 4, 1, '#fff7e0'); }
+      box(9.0, 3.4, 0, 1, 1.8, 28, '#a9bccb', '#cbd8e2');
+      poly([S(10, 3.6, 4), S(10, 5.0, 4), S(10, 5.0, 25), S(10, 3.6, 25)], C.night ? (f % 30 < 15 ? '#3d7ab0' : '#4a8ac0') : C.fridge, C.out);
+      for (let s = 0; s < 3; s++) for (let b = 0; b < 3; b++) { const [x, y] = S(10, 3.9 + b * 0.4, 7 + s * 6); P(x, y - 4, 2, 4, ['#e23a2a', '#3aa0e2', '#2ac06a'][(b + s) % 3]); }
+      box(8.4, 7.8, 0, 1.4, 1.4, 9, '#e8e0d6', '#f4efe8'); { const [x, y] = S(9.1, 8.5, 9); P(x - 3, y - 5, 6, 4, '#f7d6e0'); P(x - 3, y - 5, 6, 1, '#ff6b8a'); P(x - 1, y - 7, 2, 2, '#ff3344'); }
+      [[4.2, 5.6], [5.8, 7.6], [4.0, 8.6], [6.6, 4.0]].forEach(([i, j], ti) => { box(i - 0.15, j + 0.7, 0, 0.5, 0.5, 4, '#6a4a35'); box(i + 0.7, j - 0.15, 0, 0.5, 0.5, 4, '#6a4a35');
+        box(i, j, 0, 0.8, 0.8, 7, C.wood, C.woodT); const [x, y] = S(i + 0.4, j + 0.4, 7); P(x - 1, y - 3, 3, 2, ['#ff4433', '#f6c84a', '#8fdcb2', '#c79bff'][ti]);
+        const [ax, ay] = S(i - 0.1, j + 1.0, 0); person(ax - 4, ay - 12, shirts[(ti + 2) % 9], hairs[ti % 6], (f + ti * 3) % 14 < 7 ? 1 : 0);
+        const [bx, by] = S(i + 1.0, j - 0.1, 0); person(bx - 4, by - 12, shirts[(ti + 5) % 9], hairs[(ti + 2) % 6], (f + ti * 5) % 16 < 8 ? 1 : 0); });
+      [[0.4, 9.2], [9.3, 0.6]].forEach(([i, j]) => { box(i, j, 0, 0.5, 0.5, 5, '#c96a3a'); const [x, y] = S(i + 0.25, j + 0.25, 5); P(x - 4, y - 9, 9, 6, '#3f9a5a'); P(x - 2, y - 12, 5, 4, '#4fb06a'); P(x - 4, y - 9, 1, 6, C.out); });
+      [[3, 3], [6, 6]].forEach(([i, j]) => { const [x, y] = S(i, j, 58); const [x2, y2] = S(i, j, 44); g.strokeStyle = C.out; g.beginPath(); g.moveTo(x, y); g.lineTo(x2, y2); g.stroke(); P(x2 - 3, y2, 6, 3, '#2a1a14');
+        if (C.night) { g.save(); g.globalAlpha = 0.18 + 0.05 * Math.sin(f / 4); g.fillStyle = '#ffd27a'; g.beginPath(); g.ellipse(x2, y2 + 18, 14, 7, 0, 0, 7); g.fill(); g.restore(); } P(x2 - 2, y2 + 3, 4, 1, '#ffd27a'); });
+      const maxV = Math.max(1, ...st.v);
+      BH.SHOP.forEach((s, si) => { if (!st.v[si]) return; const n = Math.max(1, Math.round(st.v[si] / maxV * 7)); const dim = st.sel >= 0 && st.sel !== si;
+        for (let k = 0; k < n; k++) { const sp = spots[si][k % spots[si].length]; const [x, y] = S(sp[0], sp[1], 0); person(x - 4, y - 12, shirts[(k + si * 2) % 9], hairs[(k + si) % 6], (f + k * 3 + si) % 12 < 6 ? 1 : 0, false, dim);
+          if (!dim && (f + k * 7 + si * 5) % 34 < 5) { P(x + 6, y - 18, 7, 5, '#fff'); P(x + 6, y - 18, 7, 1, C.out); P(x + 8, y - 17, 3, 2, s.c); } } });
+      { const t = (f * 0.06) % 2; const ii = t < 1 ? 3.2 + t * 4 : 7.2 - (t - 1) * 4; const [x, y] = S(ii, 9.3, 0); person(x - 4, y - 12, '#1b1b1b', hairs[1], f % 4 < 2 ? 1 : 0, true); P(x + 5, y - 9, 6, 1, '#cccccc'); P(x + 6, y - 11, 2, 2, '#ff4433'); }
+    }
+    // แตะที่ฉาก = เลือกมุมที่ใกล้ที่สุด
+    const choose = (si) => {
+      const s = BH.SHOP[si];
+      if (!s) return;
+      const present = (st.rows || []).filter((r) => s.cats.indexOf(r.category) >= 0 && r.sales > 0);
+      if (present.length <= 1) { const cat = present[0] ? present[0].category : s.cats[0]; BH.cat = BH.cat === cat ? null : cat; pop.hidden = true; BH.redraw(); return; }
+      pop.replaceChildren();
+      const h = document.createElement('div'); h.className = 'h'; h.textContent = s.k + ' · เลือกหมวด'; pop.append(h);
+      present.sort((a, b) => b.sales - a.sales).forEach((r) => { const b = document.createElement('button'); b.type = 'button'; b.innerHTML = `<span>${r.category}</span><b>${BH.f0(r.sales)}</b>`; if (BH.cat === r.category) b.className = 'on';
+        b.onclick = (e) => { e.stopPropagation(); BH.cat = BH.cat === r.category ? null : r.category; pop.hidden = true; BH.redraw(); }; pop.append(b); });
+      pop.hidden = false;
+    };
+    cv.addEventListener('click', (e) => {
+      const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W, y = (e.clientY - r.top) / r.height * H;
+      let best = -1, bd = 1e9; BH.SHOP.forEach((s, si) => { const [sx, sy] = S(...s.tp); const d = (sx - x) ** 2 + (sy + 20 - y) ** 2; if (d < bd) { bd = d; best = si; } });
+      if (!pop.hidden) { pop.hidden = true; return; }
+      if (bd < 60 * 60) choose(best);
+    });
+    const loop = () => { if (!host.isConnected) { clearInterval(timer); return; } if (document.hidden || !host.offsetParent) return; f++; draw(); };
+    const timer = setInterval(loop, 120);
+    host._shop = {
+      update(rows) {
+        st.rows = rows;
+        st.v = BH.SHOP.map((s) => d3.sum(rows.filter((r) => s.cats.indexOf(r.category) >= 0), (r) => +r.sales));
+        st.sel = BH.cat ? BH.SHOP.findIndex((s) => s.cats.indexOf(BH.cat) >= 0) : -1;
+        const best = st.v.indexOf(Math.max(...st.v));
+        tags.replaceChildren(...BH.SHOP.map((s, si) => {
+          const [x, y] = S(...s.tp); const b = document.createElement('button'); b.type = 'button';
+          b.className = 'bhx-tag' + (si === best && st.v[si] ? ' best' : '') + (st.sel === si ? ' on' : '') + (st.sel >= 0 && st.sel !== si ? ' dim' : '');
+          b.style.left = Math.min(80, Math.max(20, x / W * 100)) + '%'; b.style.top = (y / H * 100) + '%';
+          b.innerHTML = `<i style="background:${s.c};box-shadow:0 0 5px ${s.c}"></i>${s.k}<b>${BH.f0(st.v[si])}</b>${si === best && st.v[si] ? '👑' : ''}`;
+          b.onclick = (e) => { e.stopPropagation(); choose(si); };
+          return b;
+        }));
+        draw();
+      },
+    };
+    draw();
+  };
+  BH.names.push('shop');
+  dash.draw('shop', (el) => {
+    const cr = BH.catRows(), m = BH.totRow();
+    if (!cr || !m) return;
+    if (!el._shop) BH.makeShop(el.querySelector('.bhx-shop-scene'));
+    const sc = el.querySelector('.bhx-shop-scene');
+    sc._shop.update(cr);
+    el._shop = 1;
+    const tot = el.querySelector('.bhx-shop-tot');
+    if (tot) {
+      tot.replaceChildren();
+      const a = document.createElement('span'); a.textContent = BH.cat ? 'หมวด: ' + BH.cat + ' (แตะเพื่อดูทุกหมวด)' : 'ทุกหมวด · ' + (m.date_range || '');
+      const b = document.createElement('b'); b.textContent = BH.f0(BH.cat ? d3.sum(cr.filter((r) => r.category === BH.cat), (r) => +r.sales) : m.sales) + ' ฿';
+      tot.append(a, b); tot.onclick = () => { if (BH.cat) { BH.cat = null; BH.redraw(); } };
+    }
   });
 
   dash.draw('filter-bar', (el) => {
@@ -3021,6 +3187,14 @@ document.addEventListener('DOMContentLoaded', function () {
       if (link) dash.setLink(id);
     };
     tabs.forEach((t) => t.addEventListener('click', () => { const was = t.classList.contains('is-on'); show(t.getAttribute('data-tab'), true); if (t.classList.contains('bhx-tab')) { const sc = document.getElementById('bh-scroller'); if (sc) sc.scrollTo({ top: 0, behavior: was ? 'smooth' : 'auto' }); } }));
+    (function () {
+      const card = document.getElementById('category-list');
+      if (!card) return;
+      let v = 'shop'; try { v = localStorage.getItem('bh_catview') || 'shop'; } catch (e) {}
+      const set = (x) => { card.setAttribute('data-view', x); card.querySelectorAll('.bhx-seg button').forEach((b) => b.classList.toggle('is-on', b.getAttribute('data-view') === x)); try { localStorage.setItem('bh_catview', x); } catch (e) {} dash.draw(x === 'shop' ? 'shop' : 'catnav'); };
+      card.querySelectorAll('.bhx-seg button').forEach((b) => b.addEventListener('click', () => set(b.getAttribute('data-view'))));
+      set(v);
+    })();
     const tb = document.getElementById('bh-theme');
     if (tb) tb.addEventListener('click', () => {
       const r = document.documentElement, nx = r.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
@@ -3039,7 +3213,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <script>
   // ดึงข้อมูลเป็นชิ้นเล็ก ๆ พร้อมกันหลายชิ้น ชิ้นไหนสะดุดจะลองใหม่เฉพาะชิ้นนั้น
-  window.BH_VERSION = 'แอป 2026-11-17.11';
+  window.BH_VERSION = 'แอป 2026-11-18.1';
   function bhCall(fn, args, cb, fail, tries) {
     tries = tries || 1;
     var r = google.script.run.withSuccessHandler(cb).withFailureHandler(function (err) {
