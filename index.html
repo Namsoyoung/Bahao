@@ -1536,7 +1536,7 @@ document.addEventListener('DOMContentLoaded', function () {
       g.save(); clipAbove(160, 270, 300, 200); sprite(f % 8 < 4 ? 'bar0' : 'bar1', 256, 241); sprite((f + 3) % 10 < 5 ? 'bar1' : 'bar0', 196, 271, true); g.restore();
       g.save(); clipAbove(380, 183, 540, 235); sprite(f % 6 < 3 ? 'chef0' : 'chef1', 432, 224); sprite((f + 2) % 8 < 4 ? 'chef1' : 'chef0', 512, 248, true); g.restore();
       // ลูกค้านั่งเก้าอี้ฝั่งหลังโต๊ะ (ช่วงล่างตัวถูกโต๊ะบัง)
-      const SEAT = [[272, 366, 350, 'c0', 0], [338, 366, 350, 'c3', 1], [407, 366, 350, 'c1', 1], [473, 366, 350, 'c5', 0], [272, 456, 440, 'c2', 0], [338, 456, 440, 'c4', 1], [407, 456, 440, 'c3', 0], [473, 456, 440, 'c0', 1]];
+      const SEAT = [[272, 366, 350, 'c0', 1], [338, 366, 350, 'c3', 0], [407, 366, 350, 'c1', 1], [473, 366, 350, 'c5', 0], [272, 456, 440, 'c2', 1], [338, 456, 440, 'c4', 0], [407, 456, 440, 'c3', 1], [473, 456, 440, 'c0', 0]];
       SEAT.forEach(([x, y, cy, w, fl], i) => { g.save(); g.beginPath(); g.rect(0, 0, W, cy); g.clip(); sprite(w + (((f >> 3) + i) % 5 === 0 ? 'b' : 'a'), x, y, !!fl, st.sel >= 0 ? 0.5 : 1); g.restore();
         if (st.sel < 0 && (f + i * 13) % 60 < 5) { const bx = x + 4, by = y - 52; g.fillStyle = '#fff'; g.strokeStyle = '#2a1a14'; g.lineWidth = 1; g.beginPath(); g.rect(bx, by, 16, 11); g.fill(); g.stroke(); g.fillStyle = ['#ff4433', '#f6c84a', '#8fdcb2', '#ffa53d'][i % 4]; g.beginPath(); g.arc(bx + 8, by + 5.5, 3, 0, 7); g.fill(); } });
       // customers (sorted by depth)
@@ -3231,7 +3231,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <script>
   // ดึงข้อมูลเป็นชิ้นเล็ก ๆ พร้อมกันหลายชิ้น ชิ้นไหนสะดุดจะลองใหม่เฉพาะชิ้นนั้น
-  window.BH_VERSION = 'แอป 2026-11-18.4';
+  window.BH_VERSION = 'แอป 2026-11-18.5';
   function bhCall(fn, args, cb, fail, tries) {
     tries = tries || 1;
     var r = google.script.run.withSuccessHandler(cb).withFailureHandler(function (err) {

@@ -1,5 +1,5 @@
 // Ba hao — เก็บหน้าแอปไว้ในเครื่อง เปิดได้ทันทีและเปิดได้แม้ไม่มีเน็ต
-const CACHE = 'bahao-2026-11-18.4';
+const CACHE = 'bahao-2026-11-18.5';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './shop-night.webp', './shop-day.webp', './shop-sprites.png',
   'https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())); });
