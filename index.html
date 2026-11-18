@@ -1464,12 +1464,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ===== ร้าน Ba hao (ภาพวาด) การ์ดหมวดสินค้า =====
   BH.SHOP = [
-    { k: 'ค็อกเทล', cats: ['ค็อกเทล', 'ม็อกเทล'], c: '#ff4d3d', tag: [330, 212], spots: [[352, 262], [322, 276], [292, 292], [260, 307], [230, 328], [370, 250], [198, 340]] },
-    { k: 'ครัว', cats: ['อาหารจานหลัก', 'อาหารทานเล่น', 'ซุป', 'ข้าว / เครื่องเคียง'], c: '#ffa53d', tag: [470, 92], spots: [[432, 264], [470, 274], [506, 286], [452, 290]] },
-    { k: 'เบียร์', cats: ['เบียร์'], c: '#f6c84a', tag: [40, 268], spots: [[178, 380], [205, 368], [152, 394]] },
-    { k: 'ซอฟต์ดริงก์', cats: ['ซอฟต์ดริงก์'], c: '#4ab8ff', tag: [700, 192], spots: [[628, 348], [602, 356]] },
-    { k: 'สุรา / ไวน์', cats: ['สุรา / ช็อต', 'ไวน์'], c: '#b46cff', tag: [214, 118], spots: [[388, 232], [406, 246]] },
-    { k: 'ของหวาน', cats: ['ของหวาน'], c: '#ff7ab0', tag: [560, 254], spots: [[578, 388], [552, 380]] },
+    { k: 'ค็อกเทล', cats: ['ค็อกเทล', 'ม็อกเทล'], c: '#ff4d3d', tag: [12, 488], side: 'l', pin: [300, 236], spots: [[352, 262], [322, 276], [292, 292], [260, 307], [230, 328], [370, 250], [198, 340]] },
+    { k: 'ครัว', cats: ['อาหารจานหลัก', 'อาหารทานเล่น', 'ซุป', 'ข้าว / เครื่องเคียง'], c: '#ffa53d', tag: [712, 62], side: 'r', pin: [466, 148], spots: [[432, 264], [470, 274], [506, 286], [452, 290]] },
+    { k: 'เบียร์', cats: ['เบียร์'], c: '#f6c84a', tag: [12, 533], side: 'l', pin: [132, 270], spots: [[178, 380], [205, 368], [152, 394]] },
+    { k: 'ซอฟต์ดริงก์', cats: ['ซอฟต์ดริงก์'], c: '#4ab8ff', tag: [712, 533], side: 'r', pin: [668, 246], spots: [[628, 348], [602, 356]] },
+    { k: 'สุรา / ไวน์', cats: ['สุรา / ช็อต', 'ไวน์'], c: '#b46cff', tag: [12, 62], side: 'l', pin: [228, 172], spots: [[388, 232], [406, 246]] },
+    { k: 'ของหวาน', cats: ['ของหวาน'], c: '#ff7ab0', tag: [712, 488], side: 'r', pin: [582, 286], spots: [[578, 388], [552, 380]] },
   ];
   BH.SHOP_SPR = {"bar0": [0, 0, 28, 43], "bar1": [30, 0, 24, 43], "chef0": [56, 0, 31, 49], "chef1": [89, 0, 37, 49], "wait0": [128, 0, 37, 43], "wait1": [167, 0, 30, 44], "c0a": [199, 0, 24, 43], "c0b": [225, 0, 23, 42], "c1a": [250, 0, 23, 44], "c1b": [275, 0, 22, 43], "c2a": [299, 0, 24, 42], "c2b": [325, 0, 25, 42], "c3a": [352, 0, 27, 45], "c3b": [381, 0, 27, 43], "c4a": [410, 0, 20, 45], "c4b": [432, 0, 20, 44], "c5a": [454, 0, 23, 45], "c5b": [479, 0, 23, 44]};
   BH.SHOP_BASE = /github\.io$|^localhost$/.test(location.hostname) ? '' : 'https://namsoyoung.github.io/Bahao/';
@@ -1514,17 +1514,35 @@ document.addEventListener('DOMContentLoaded', function () {
       // bartender behind the bar, chef behind the kitchen pass
       g.save(); clipAbove(160, 270, 300, 200); sprite(f % 8 < 4 ? 'bar0' : 'bar1', 256, 241); g.restore();
       g.save(); clipAbove(380, 183, 540, 235); sprite(f % 6 < 3 ? 'chef0' : 'chef1', 446, 228); g.restore();
+      // ลูกค้านั่งเก้าอี้ฝั่งหลังโต๊ะ (ช่วงล่างตัวถูกโต๊ะบัง)
+      const SEAT = [[272, 366, 350, 'c0', 0], [338, 366, 350, 'c3', 1], [407, 366, 350, 'c1', 1], [473, 366, 350, 'c5', 0], [272, 456, 440, 'c2', 0], [338, 456, 440, 'c4', 1], [407, 456, 440, 'c3', 0], [473, 456, 440, 'c0', 1]];
+      SEAT.forEach(([x, y, cy, w, fl], i) => { g.save(); g.beginPath(); g.rect(0, 0, W, cy); g.clip(); sprite(w + (((f >> 3) + i) % 5 === 0 ? 'b' : 'a'), x, y, !!fl, st.sel >= 0 ? 0.5 : 1); g.restore();
+        if (st.sel < 0 && (f + i * 13) % 60 < 5) { const bx = x + 4, by = y - 52; g.fillStyle = '#fff'; g.strokeStyle = '#2a1a14'; g.lineWidth = 1; g.beginPath(); g.rect(bx, by, 16, 11); g.fill(); g.stroke(); g.fillStyle = ['#ff4433', '#f6c84a', '#8fdcb2', '#ffa53d'][i % 4]; g.beginPath(); g.arc(bx + 8, by + 5.5, 3, 0, 7); g.fill(); } });
       // customers (sorted by depth)
       const maxV = Math.max(1, ...st.v), list = [];
       BH.SHOP.forEach((s, si) => { if (!st.v[si]) return; const n = Math.max(1, Math.round(st.v[si] / maxV * s.spots.length)); const dim = st.sel >= 0 && st.sel !== si;
         for (let k = 0; k < n; k++) { const [x, y] = s.spots[k]; const who = CUST[(k * 2 + si * 3) % 6]; list.push({ x, y, n: who + (((f >> 2) + k + si) % 5 === 0 ? 'b' : 'a'), flip: (k + si) % 3 === 0, a: dim ? 0.35 : 1, s, k, si }); } });
-      [[262, 362, 'c4'], [482, 360, 'c2'], [482, 458, 'c5']].forEach(([x, y, w], i) => list.push({ x, y, n: w + (((f >> 2) + i) % 4 === 0 ? 'b' : 'a'), flip: i === 1, a: st.sel >= 0 ? 0.5 : 1 }));
-      const t = (f * 0.012) % 2, wx = t < 1 ? 230 + t * 300 : 530 - (t - 1) * 300;
-      list.push({ x: wx, y: 398, n: f % 4 < 2 ? 'wait0' : 'wait1', flip: t < 1, a: 1 });
+      const amb = st.sel >= 0 ? 0.5 : 1;
+      // พนักงานเสิร์ฟ 3 คน เดินคนละเส้นทาง
+      [[230, 530, 398, 0.012, 0], [280, 470, 494, 0.016, 0.7], [380, 572, 302, 0.014, 1.3]].forEach(([x0, x1, y, sp, ph]) => {
+        const t = (f * sp + ph) % 2, x = t < 1 ? x0 + t * (x1 - x0) : x1 - (t - 1) * (x1 - x0);
+        list.push({ x, y, n: (f + ph * 10 | 0) % 4 < 2 ? 'wait0' : 'wait1', flip: t < 1, a: 1 });
+      });
+      // พนักงานรับออเดอร์ ยืนข้างโต๊ะ
+      list.push({ x: 505, y: 362, n: 'wait1', flip: false, a: 1, order: true });
+      const drawPins = () => BH.SHOP.forEach((s, si) => { if (!st.v[si]) return; const on = st.sel < 0 || st.sel === si; const a = st.anchor && st.anchor[si];
+        g.save(); g.globalAlpha = on ? 0.75 : 0.25;
+        if (a) { g.strokeStyle = s.c; g.lineWidth = 1.5; g.setLineDash([4, 4]); g.lineDashOffset = -f; g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(s.pin[0], s.pin[1]); g.stroke(); g.setLineDash([]); }
+        const r = 4 + (on ? 2 * Math.abs(Math.sin(f / 5 + si)) : 0);
+        g.globalAlpha = on ? 0.35 : 0.15; g.fillStyle = s.c; g.beginPath(); g.arc(s.pin[0], s.pin[1], r + 4, 0, 7); g.fill();
+        g.globalAlpha = on ? 1 : 0.4; g.fillStyle = s.c; g.strokeStyle = '#fff'; g.lineWidth = 1.5; g.beginPath(); g.arc(s.pin[0], s.pin[1], 4, 0, 7); g.fill(); g.stroke(); g.restore(); });
       list.sort((a, b) => a.y - b.y).forEach((p) => {
         sprite(p.n, p.x, p.y, p.flip, p.a);
+        if (p.order) { g.fillStyle = '#fffbe8'; g.fillRect(p.x - 13, p.y - 28, 7, 9); g.strokeStyle = '#2a1a14'; g.lineWidth = 1; g.strokeRect(p.x - 13, p.y - 28, 7, 9); g.fillStyle = '#2a1a14'; for (let q = 0; q < 3; q++) g.fillRect(p.x - 12, p.y - 26 + q * 2.5, 5, 1);
+          if (f % 30 < 18) { g.fillStyle = '#fff'; g.beginPath(); g.rect(p.x - 30, p.y - 60, 22, 13); g.fill(); g.stroke(); g.fillStyle = '#2a1a14'; g.font = 'bold 9px sans-serif'; g.fillText('...', p.x - 25, p.y - 51); } }
         if (p.s && p.a === 1 && (f + p.k * 9 + p.si * 7) % 46 < 6) { const bx = p.x + 6, by = p.y - 50; g.fillStyle = '#fff'; g.strokeStyle = '#2a1a14'; g.lineWidth = 1; g.beginPath(); g.roundRect ? g.roundRect(bx, by, 16, 11, 3) : g.rect(bx, by, 16, 11); g.fill(); g.stroke(); g.fillStyle = p.s.c; g.beginPath(); g.arc(bx + 8, by + 5.5, 3, 0, 7); g.fill(); }
       });
+      drawPins();
     }
     const choose = (si) => {
       const s = BH.SHOP[si];
@@ -1541,7 +1559,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!pop.hidden) { pop.hidden = true; return; }
       const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W, y = (e.clientY - r.top) / r.height * H;
       let best = -1, bd = 1e9;
-      BH.SHOP.forEach((s, si) => [s.tag].concat(s.spots).forEach(([sx, sy]) => { const d = (sx - x) ** 2 + (sy - 20 - y) ** 2; if (d < bd) { bd = d; best = si; } }));
+      BH.SHOP.forEach((s, si) => [s.pin].concat(s.spots).forEach(([sx, sy]) => { const d = (sx - x) ** 2 + (sy - 20 - y) ** 2; if (d < bd) { bd = d; best = si; } }));
       if (bd < 90 * 90) choose(best);
     });
     const timer = setInterval(() => { if (!host.isConnected) { clearInterval(timer); return; } if (document.hidden || !host.offsetParent) return; f++; draw(); }, 110);
@@ -1554,11 +1572,13 @@ document.addEventListener('DOMContentLoaded', function () {
         tags.replaceChildren(...BH.SHOP.map((s, si) => {
           const b = document.createElement('button'); b.type = 'button';
           b.className = 'bhx-tag' + (si === best && st.v[si] ? ' best' : '') + (st.sel === si ? ' on' : '') + (st.sel >= 0 && st.sel !== si ? ' dim' : '');
-          const px = s.tag[0] / W; b.style.left = (px * 100) + '%'; b.style.top = (s.tag[1] / H * 100) + '%'; b.style.transform = px > 0.75 ? 'translate(-100%,-100%)' : px < 0.25 ? 'translate(0,-100%)' : '';
+          b.style.left = (s.tag[0] / W * 100) + '%'; b.style.top = (s.tag[1] / H * 100) + '%'; b.style.transform = s.side === 'r' ? 'translate(-100%,-100%)' : 'translate(0,-100%)';
           b.innerHTML = `<i style="background:${s.c};box-shadow:0 0 5px ${s.c}"></i>${s.k}<b>${BH.f0(st.v[si])}</b>${si === best && st.v[si] ? '👑' : ''}`;
           b.onclick = (e) => { e.stopPropagation(); choose(si); };
           return b;
         }));
+        requestAnimationFrame(() => { const hr = host.getBoundingClientRect(); if (!hr.width) return; const k = W / hr.width;
+          st.anchor = Array.from(tags.children).map((b, si) => { const r = b.getBoundingClientRect(); const y = (r.top + r.height / 2 - hr.top) * k; return BH.SHOP[si].side === 'r' ? [(r.left - hr.left) * k, y] : [(r.right - hr.left) * k, y]; }); draw(); });
         draw();
       },
     };
@@ -3188,7 +3208,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <script>
   // ดึงข้อมูลเป็นชิ้นเล็ก ๆ พร้อมกันหลายชิ้น ชิ้นไหนสะดุดจะลองใหม่เฉพาะชิ้นนั้น
-  window.BH_VERSION = 'แอป 2026-11-18.2';
+  window.BH_VERSION = 'แอป 2026-11-18.3';
   function bhCall(fn, args, cb, fail, tries) {
     tries = tries || 1;
     var r = google.script.run.withSuccessHandler(cb).withFailureHandler(function (err) {
